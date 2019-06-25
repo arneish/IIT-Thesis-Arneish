@@ -1,26 +1,38 @@
 \BOOKMARK [0][-]{chapter*.1}{ACKNOWLEDGEMENTS}{}% 1
-\BOOKMARK [0][-]{chapter*.3}{LIST OF TABLES}{}% 2
-\BOOKMARK [0][-]{chapter*.4}{LIST OF FIGURES}{}% 3
-\BOOKMARK [0][-]{chapter*.5}{ABBREVIATIONS}{}% 4
-\BOOKMARK [0][-]{chapter*.6}{NOTATION}{}% 5
-\BOOKMARK [0][-]{chapter*.7}{ABSTRACT}{}% 6
-\BOOKMARK [0][-]{chapter.1}{Introduction}{}% 7
-\BOOKMARK [0][-]{chapter.2}{Preliminaries}{}% 8
-\BOOKMARK [1][-]{section.2.1}{Background}{chapter.2}% 9
-\BOOKMARK [1][-]{section.2.2}{Problem Formulation}{chapter.2}% 10
-\BOOKMARK [1][-]{section.2.3}{Theoretical Characterization}{chapter.2}% 11
-\BOOKMARK [1][-]{section.2.4}{Exact Algorithm}{chapter.2}% 12
-\BOOKMARK [2][-]{subsection.2.4.1}{Overview}{section.2.4}% 13
-\BOOKMARK [2][-]{subsection.2.4.2}{Replica-based Graph Instance Storage}{section.2.4}% 14
-\BOOKMARK [2][-]{subsection.2.4.3}{Subgraph Extension}{section.2.4}% 15
-\BOOKMARK [2][-]{subsection.2.4.4}{Correlation Computation}{section.2.4}% 16
-\BOOKMARK [2][-]{subsection.2.4.5}{Mining Algorithm}{section.2.4}% 17
-\BOOKMARK [1][-]{section.2.5}{Approximate Algorithm}{chapter.2}% 18
-\BOOKMARK [1][-]{section.2.6}{Analysis}{chapter.2}% 19
-\BOOKMARK [2][-]{subsection.2.6.1}{Complexity Analysis}{section.2.6}% 20
-\BOOKMARK [1][-]{section.2.7}{Experiments}{chapter.2}% 21
-\BOOKMARK [2][-]{subsection.2.7.1}{Experimental Setup}{section.2.7}% 22
-\BOOKMARK [2][-]{subsection.2.7.2}{Efficiency}{section.2.7}% 23
-\BOOKMARK [2][-]{subsection.2.7.3}{Performance.}{section.2.7}% 24
-\BOOKMARK [2][-]{subsection.2.7.4}{Quality}{section.2.7}% 25
-\BOOKMARK [2][-]{subsection.2.7.5}{Interpretbility}{section.2.7}% 26
+\BOOKMARK [0][-]{chapter*.2}{ABSTRACT}{}% 2
+\BOOKMARK [0][-]{chapter.1}{Introduction}{}% 3
+\BOOKMARK [0][-]{chapter.2}{Preliminaries}{}% 4
+\BOOKMARK [1][-]{section.2.1}{Background}{chapter.2}% 5
+\BOOKMARK [1][-]{section.2.2}{Problem Formulation}{chapter.2}% 6
+\BOOKMARK [1][-]{section.2.3}{Theoretical Characterization}{chapter.2}% 7
+\BOOKMARK [0][-]{chapter.3}{Approximate Algorithm}{}% 8
+\BOOKMARK [1][-]{section.3.1}{Overview}{chapter.3}% 9
+\BOOKMARK [2][-]{subsection.3.1.1}{Search Tree}{section.3.1}% 10
+\BOOKMARK [2][-]{subsection.3.1.2}{Best-first Search}{section.3.1}% 11
+\BOOKMARK [2][-]{subsection.3.1.3}{Best-first Termination Criteria}{section.3.1}% 12
+\BOOKMARK [1][-]{section.3.2}{Replica-based Graph Instance Storage}{chapter.3}% 13
+\BOOKMARK [2][-]{subsection.3.2.1}{Replica Structure}{section.3.2}% 14
+\BOOKMARK [2][-]{subsection.3.2.2}{Generation of a Replica Graph}{section.3.2}% 15
+\BOOKMARK [1][-]{section.3.3}{Subgraph Extension}{chapter.3}% 16
+\BOOKMARK [2][-]{subsection.3.3.1}{Extension Rule}{section.3.3}% 17
+\BOOKMARK [2][-]{subsection.3.3.2}{Duplicated Subgraph Prunning}{section.3.3}% 18
+\BOOKMARK [1][-]{section.3.4}{Correlation Computation}{chapter.3}% 19
+\BOOKMARK [2][-]{subsection.3.4.1}{Global Index}{section.3.4}% 20
+\BOOKMARK [2][-]{subsection.3.4.2}{Calculating Correlation}{section.3.4}% 21
+\BOOKMARK [2][-]{subsection.3.4.3}{Replica Structure Transformation}{section.3.4}% 22
+\BOOKMARK [2][-]{subsection.3.4.4}{Avoiding Subgraph/Supergraph Correlation}{section.3.4}% 23
+\BOOKMARK [1][-]{section.3.5}{Mining Algorithm}{chapter.3}% 24
+\BOOKMARK [2][-]{subsection.3.5.1}{Initialization}{section.3.5}% 25
+\BOOKMARK [2][-]{subsection.3.5.2}{Search Steps}{section.3.5}% 26
+\BOOKMARK [0][-]{chapter.4}{Experiments}{}% 27
+\BOOKMARK [1][-]{section.4.1}{Experimental Setup}{chapter.4}% 28
+\BOOKMARK [2][-]{subsection.4.1.1}{Datasets}{section.4.1}% 29
+\BOOKMARK [2][-]{subsection.4.1.2}{Parameters}{section.4.1}% 30
+\BOOKMARK [2][-]{subsection.4.1.3}{Baselines}{section.4.1}% 31
+\BOOKMARK [1][-]{section.4.2}{Efficiency}{chapter.4}% 32
+\BOOKMARK [2][-]{subsection.4.2.1}{Running time:}{section.4.2}% 33
+\BOOKMARK [2][-]{subsection.4.2.2}{Memory footprint.}{section.4.2}% 34
+\BOOKMARK [1][-]{section.4.3}{Performance.}{chapter.4}% 35
+\BOOKMARK [1][-]{section.4.4}{Quality}{chapter.4}% 36
+\BOOKMARK [0][-]{chapter.5}{Conclusions}{}% 37
+\BOOKMARK [0][-]{appendix.A}{The Exact Algorithm for Correlated Subgraph Mining}{}% 38

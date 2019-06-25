@@ -1,4 +1,4 @@
-\chapter{Exact Algorithm}
+\chapter{Approximate Algorithm}
 \label{sec:exact_algo}
 
 \section{Overview}
@@ -333,8 +333,212 @@ attempts to find all (if any) instances of child $R$ in $G$ one-by-one. More
 specifically, for every vertex $m \in V(replica(Q))$ that maps to the
 \emph{extending vertex} $u$, the algorithm iterates over its adjacent edges $e
 \in E(G)$ that map to the \emph{candidate edge} (line 5) and invokes
-\textsc{FindAllInstances} (Algorithm \ref{algo:complete-instances}) to find
-every instance of $R$ from \emph{replica($Q$)} that contains $e$. Algorithm
+\textsc{FindAllInstancesApprox} (Algorithm \ref{algo:approx-instances}) to find
+every instance of $R$ from \emph{replica($Q$)} that contains $e$. 
+
+Exact \textit{replica} construction (Appendix I) for a
+subgraph pattern requires searching for every instance of the pattern in the
+data graph using the \textit{replica} of its parent pattern. In
+\textsc{FindAllInstances} (Appendix I), we identify
+all instances one-by-one in a depth-first guided search. However, performing
+this computation can be expensive since subgraph isomorphism is known to be an
+\textit{NP-hard} problem and thus the computational complexity is worst-case
+exponential in the pattern size. Moreover, the number of instances of a pattern
+generally grows exponentially with increasing density and size of the data
+graph. As a result, a \emph{complete} enumeration of instances such as in
+Algorithm A.1 does not scale well to dense or large
+graphs. This establishes the need for a faster strategy for \textit{replica}
+construction.
+
+We now make an important observation: to match a vertex $v\in V(G)$ and
+appropriate edges incident to $v$ in $V(replica(R))$  and $E(replica(R))$
+respectively for a pattern $R$, the identification of \textit{all} instances of
+$R$ containing $v$ might not be necessary. In other words, by identifying more
+instances containing $v$ than might be necessary, we do not gain any additional
+information about the \textit{replica} graph structure. This suggests that
+repeated traversals on vertices during the course of identifying instances can
+perhaps be reduced without losing structural information about the
+\textit{replica}.
+
+Algorithm \ref{algo:approx-instances} describes an approximate method to
+implement the idea for accelerated
+\textit{replica} construction by reducing repeated traversals on
+"already-explored" vertices. We attempt to avoid enumerating those instances
+during construction that do not provide new information about the \emph{replica}
+structure as a strategy to reduce computational complexity. Before discussing
+this method, we define some additional data structures for the \textit{replica}:
+% However, the strategy also could miss identifying a few relevant instances in
+% certain cases which could possibly result in the loss of some information
+% about the \textit{replica} graph and its mappings lists (Section
+% \ref{subsubsec:replica-ds}). Consequently, the \textit{replica} $R_a$ thus
+% obtained would be an \textbf{approximation} of the complete \emph{replica}
+% $R_c$ such that $V_{R_a} \subseteq V_{R_c}$ and $E_{R_a} \subseteq E_{R_c}$ .
+% In Section \ref{sec:experiments}, we demonstrate empirically that such an
+% approximation scheme, while enabling computational tractability, does not
+% significantly affect quality of the top-\textit{k} results. 
+
+%!!!write that misses are insignificant as proved in the experiments write that
+%!!!approximation means missing correct not including incorrect mappings
+
+% Algorithm \ref{algo:approx-instances} describes this approximation scheme.
+
+
+\para{$\bullet$ Potential children set ${P_{v,c}}$} \\
+(defined for each $v\in V(replica(Q))$ mapped to $p\in V(Q)$ for each child
+$c\in children(p,Q) \in V(Q)$): stores every replica vertex $w\in
+V(replica(Q))$ such that $c\in children(p,Q)$ can potentially map to $w$ (i.e. $w$ is
+a candidate for $c$).
+
+\para{$\bullet$ Enumerated set ${E_v}$} \\
+(defined for each $v\in V(Q)$): stores every vertex $w\in replica(Q)$ that maps
+to $v$ such that: $\forall c\in children(v,Q),\ P_{v,c}=\emptyset$. In other
+words, $E_{v}$ stores all its mappings that have been "fully-explored" for all
+child mappings. 
+
+% $v$ has been
+% fully-explored for all possible child mappings below it.
+
+\para{$\bullet$ Confirmed children set ${C_{v,c}}$} \\
+(defined for each $v\in V(replica(Q))$ mapped to $p\in V(Q)$ for each child
+$c\in children(p,Q) \in V(Q)$): stores every replica vertex $w\in V(replica(Q))$
+such that: (1) there exists at least one instance including the mappings $(p, v)$ and
+$(w,c)$, and (2) $w \in E_{c}$  
+
+%(Algorithms \ref{algo:search} and \ref{algo:complete-instances}) requires and
+% correlation computation 
+
+Algorithm \ref{algo:approx-instances} is a recursive algorithm. In the general
+(recursive) case (lines 5-30), it begins by invoking \textsc{NextQueryEdge}
+which returns one edge at a time from $E(Q)$ in the order of the rooted $DFS\
+List$. Edge $e(p,c)$ thus returned connects vertices $p,c \in V(Q)$ such that
+$c\in children(p)$ as per the $DFS\ List$ and $c$ is the pattern vertex to be
+matched next ($p$ is matched to $v \in V(replica(Q))$). The algorithm then
+checks for the existence of the potential children set for storing candidate
+vertices for matching $c$, given that $p$ is mapped to $v$. If this set
+$P_{v,c}(\subseteq V(replica(Q)))$ does not exist, it is computed by invoking
+\textsc{FilterCandidates} which stores all vertices $w\in V(replica(Q))$ such
+that: (1) $w$ is contained in the \textit{replica} adjacency list of $v$; (2)
+$c$ exists in the inverse mapping list of $w$. That is, \forall $w \in P_{v,c}$,
+$c\in InverseMap(w)$; (3) The edge label of $(v,w)\in E(replica(Q))$ matches
+that of $(p,c)\in E(Q)$. Thus, set $P_{v,c}$ is constructed once when a match
+for $c$ is being sought for the first time with $p$ having been mapped to $v$,
+and indexed. Similarly, confirmed children set $C_{v,c}$ is initialized as an
+empty set and indexed. In the event of any subsequent visit, the algorithm
+simply considers candidates remaining in $P_{v,c}$ for matching $c$. Next, for
+every vertex $w \in P_{v,c}$ such that $w$ has not already been mapped to some
+other pattern vertex in the current $instance$, the algorithm attempts the
+mapping $(c,w)$ in $instance$ and recursively calls
+\textsc{FindAllInstancesApprox} to match remaining pattern vertices following
+the $DFS\ List$ of edges. It sets a boolean $InstanceFound$ to $True$ if it
+finds at least one $instance$ in the recursive call and appends the set of all
+found instances to $\mathbb{I}$. During the recursive call, if $w$ gets inserted
+into the enumerated set for $c$ ($E_c$), it is transferred from $P_{v,c}$ to
+$C_{v,c}$. Finally, $(c,w)$ is removed from $instance$ and the next valid
+candidate in $P_{v,c}$ tried as a possible matching for $c$ in the following
+iteration. Suppose, the algorithm fails to find any $instance$ even after
+considering every $w\in P_{v,c}$. (A possible scenario where this could happen
+is if $P_{v,c}=\emptyset$, after all original candidates have been confirmed and
+transferred to $C_{v,c}$). In such a scenario, $InstanceFound$ would remain
+false after the first loop. The algorithm would then start iterating over
+$C_{v,c}$, the set of confirmed children till the time an $instance$ is found
+for some $w' \in C_{v,u}$ and $InstanceFound$ is set to $True$. Finally, if the candidates set $P_{v,c'}$ for \textbf{every} $c'\in children(p)$
+is exhausted, $v$ is appended to the enumerated set for $p (E_{p})$. This means that
+\textit{all} possible candidate child mappings have been traversed and
+confirmed. Note that child mapping $w$ if inserted into $E_{c}$
+gets tranferred from $P_{v,c}$ to $C_{v,c}$. This is because any subsequent searches for possible mappings of $c$ at $v$
+can ignore all $w' \in C_{v,c}$ since such a $w'$ has been completely
+"enumerated" and thus matching it to $c$ would result in repeated traversals
+over already explored portions of the graph. The \textit{Base Case} (lines 1-3) occurs when the algorithm finds an instance
+of the child pattern $R$ (i.e., $|instance|=|V(R)|$). The algorithm
+records the mappings of every $l'\in Leaves(Q)$ in the corresponding enumerated
+sets, since there cannot exist any further child mappings below leaves. Finally,
+the $instance$ is returned.
+
+
+\begin{algorithm}
+	\caption{\textsc{FindAllInstancesApprox}}\label{algo:approx-instances}
+	\dontprintsemicolon
+	% \begin{algorithmic}[1] \REQUIRE data graph: $G$, parent pattern: $Q$,
+	% replica of $Q$: $replica(Q)$, child pattern: $R$, parent edge: $(u, v)\in
+	% E(G)$ mapped to $(u', v')\in E(R)$, $DFS\ List$ of $Q$ rooted at
+	% $extending\
+	% index$, $instance$, $\mathbb{I}$ \ENSURE all $instances\ \mathbb{I}$ of
+	% pattern $R$ in $G$ such that $\forall I \in \mathbb{I},\ (u, v)\in I$ as a
+	% mapping of $(u',v')$\\ 
+	\KwIn{Graph $G$, parent: $Q$, $replica(Q)$, child: $R$, parent edge: $(u,
+			v)\in E(G)$ mapped to $(u', v')\in E(R)$, $DFS\ List$ of $Q$ rooted
+			at $extending\ index$, $instance$, $\mathbb{I}$} \KwOut{relevant
+			$instances\ \mathbb{I}$ of pattern $R$ in $G$ such that $\forall I
+			\in
+			\mathbb{I},\ (u, v)\in E(I)$ as a mapping of $(u',v')$}
+
+	\nonl $Base\ Case:$\;
+	\uIf {$|instance| = |V(R)|$}
+	{
+		
+		Update $E_{l'}$ for each  $l'\in Leaves(Q)$\;
+		\nonl $[[E_{l'}\leftarrow E_{l'} \cup \{instance(l')\}, \forall l' \in Leaves(Q)]]$ \;
+		\Return{$instance$}\;
+	} 
+		$Recursive\ Case:$\; 
+		$e(p,c)\coloneq$ \textsc{NextQueryEdge($DFS\ List$, ...)}\; \nonl $[[\ (p,c) \in E(Q),\ c
+		\in children(p)]]$\; $v\coloneq$ Mapping of $p$ in $instance$\; \nonl
+		$[[\ v\in V(replica(Q))\wedge (p,v)\in instance]]$\;
+	\uIf{${P_{v,c}}$ \textup{does not exist}}
+	{${P_{v,c}}\coloneq$ \textsc{FilterCandidates($instance$, $v$, $c$, $...$)}
+		\; \nonl $[[\forall w \in P_{v,c}\ ((w\in V(replica(Q))\wedge (w\in
+		adjList(v)) \wedge (c\in InverseMap(w))\wedge (L(v,w)=L(p,c)) )]]$\;
+		${C_{v,c}}\coloneq \emptyset$\;}
+	% \uIf{$v \in V(replica(Q))$ \textup{is mapped to} $v'$ \textup{for the
+	% first time}}
+	% {
+	%   $c':=$ \textsc{NextQueryVertex($DFS\ List$, $v'$)} \; ${P_{v,c'}}:=$
+	%   \textsc{FilterCandidates($instance$, $v$, $c'$, $...$)} \;
+	%   ${C_{v,c'}}:=\emptyset$\; %     \FOR{\textbf{each} adjacent edge
+	%   $e(v,w)$ of $v$ in $replica(Q)$} \IF{$e$ %     maps to the corresponding
+	%   $child\ edge$ in $DFS\ List$} \STATE $\mathbb{P} %     \leftarrow
+	%   \mathbb{P} \cup w$ \ENDIF \ENDFOR % \ENDIF
+	% }
+	$boolean$ $InstanceFound \coloneq$ {\sf False}\; \ForEach {$w \in P_{v,c}$
+		\textup{such that $w$ is not yet matched}} {$instance\leftarrow
+		instance\cup \{(c,w)\}$\; $\mathbb{I'} \leftarrow $
+		\textsc{FindAllInstancesApprox($R$, $e$, $instance$, $DFS\ List$)} \;
+		\uIf {$\mathbb{I'} \neq \emptyset$}
+		{$\mathbb{I}\leftarrow \mathbb{I}\ \cup\ \mathbb{I'}$\;
+			$InstanceFound\leftarrow$ {\sf True} \;}
+		\uIf {$w \in E_{c}$}
+		{	$P_{v,c}\leftarrow P_{v,c} \setminus \{w\}$\; $C_{v,c}\leftarrow
+				C_{v,c} \cup \{w\}$\;} $instance\leftarrow instance \setminus
+				\{(c,w)\}$\;}
+	% \While{$InstanceFound$ \textup{is} {\sf False}}
+	% {
+	\ForEach{$w' \in C_{v,c}$ \textup{such that $w'$ is not yet matched and}
+		$InstanceFound$ \textup{is} {\sf False}} {$instance\leftarrow
+		instance\cup \{(c,w')\}$\; $\mathbb{I'} \leftarrow $
+		\textsc{FindAllInstancesApprox($R$, $e$, $instance$, $DFS\ List$)} \;
+		\uIf {$\mathbb{I'} \neq \emptyset$}
+		{$\mathbb{I}\leftarrow \mathbb{I}\ \cup\ \mathbb{I'}$\;
+			$InstanceFound\leftarrow$ {\sf True} \;} $instance\leftarrow
+			instance \setminus \{(c,w')\}$\;
+		% \IF{edge $e'(v,w')$ is \textbf{not} already in $instance$} \STATE
+		% $instance\leftarrow instance\cup e'$ \STATE $\mathbb{I'}\leftarrow$
+		% {\sf find\ all\ instances($R$, $e'$, $instance$, $DFS\ List$)}
+		% \IF{$\mathbb{I'}$ is \textbf{not} empty} \STATE $\mathbb{I}\leftarrow
+		% \mathbb{I}\ \cup\ \mathbb{I'}$ \STATE $Found\leftarrow True$ \STATE
+		% \textbf{break} \ENDIF \ENDIF Recursively enumerate all instances
+		% $(lines[12:16])$ \;
+	}
+	% }
+	\uIf{$\ \forall c' \in children(p),\ P_{v,c} = \emptyset$}
+	{ $E_{p} \leftarrow E_{p} \cup v$} \Return{$\mathbb{I}}\;
+\end{algorithm}
+
+
+
+
+
+\eat{
+Algorithm
 \ref{algo:complete-instances}, thus invoked, recursively enumerates all
 instances of $R$ in a depth-first manner following the \emph{DFS List} of $Q$
 (computed earlier). In the general case (lines 4-10), the algorithm begins by
@@ -407,6 +611,14 @@ and vice-versa.
 	% \ENDFOR
 	% \STATE \textbf{return} $\mathbb{I}$
 \end{algorithm}
+}
+
+
+
+
+
+
+
 
 This replica-based instance storage strategy not only builds a foundation for the sequential
 efficient correlation calculation, but also benefits the MNI support counting in
@@ -696,24 +908,6 @@ Algorithm 4 summarises the steps described above.
 		}
 		Update {\sf Top\ $k$} order with computed correlation ($\tau$) values\;
 		{\sf operated} $\leftarrow$ {\sf operated} $\cup \ \{Q\}$\;
-
-		% \REQUIRE data graph: $G$, hop value: $h$, initial distance index set: $Index$
-		% \ENSURE
-		% \STATE $DFS\ List\leftarrow$ get rooted {\sf DFS} of $Q$ with $center$ as $root$
-		% \FORALL{mappings $m$ of $center$ in $replica(Q)$}
-		% % \STATE $\mathbb{I}\leftarrow$ {set of all instances of $Q$ in $replica(Q)$ containing $m$ mapped to $center$}
-		% \FORALL{vertex $u$ constituting an instance in $\mathbb{I}$}
-		% \STATE $\forall v\in CorV(u)$, $CorP(v)\leftarrow CorP(v)\cup Q$
-		% \STATE $Collect(m, Q)\leftarrow Collect(m, Q)\cup CorP(u)$
-		% \ENDFOR
-		% \ENDFOR
-		% \FORALL{patterns $Q_k$ in set {\sf operated}}
-		% \STATE $\tau(Q, Q_k, h)\leftarrow$ number of instance group centers $m$ s.t. $Q_k\in Collect(m, Q)$
-		% \ENDFOR
-		% \STATE Update {\sf Top\ $k$} list with the computed correlation ($\tau$) values
-		% \STATE {\sf operated} $\leftarrow$ {\sf operated} $\cup \ Q$
-		% \RETURN
-	% \end{algorithmic}
 \end{algorithm}
 %append the "complete" collect-stat algorithm here 
 
@@ -802,7 +996,6 @@ hereafter and doing so accelerates the search procedure.
 % Section \ref{subsec:search-steps}. Finally, we remove the infrequent edges
 % from the data graph (line ) because they are useless after initialization and
 % removing them could accelerate the search.
-
 \subsection{Search Steps}
 \label{subsec:search-steps}
 Following the initialization, the search algorithm as specified in
