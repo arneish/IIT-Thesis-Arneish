@@ -1,0 +1,54 @@
+For simplicity, we use the notations below:
+The data graph $G$ has $n$ nodes and $m$ edges,
+among them $n_f$ nodes and $m_f$ edges are frequent based on the input
+minimum support threshold. We denote by $n_h$ and $m_h$ the maximum number
+of nodes and edges in the $h$-hop of a node in $G$. The pattern search tree
+$T$ has at most $n_T$ vertices, with $n'_T$ vertices having at least one frequent child in the search queue $\mathcal{C}$, during the execution of our algorithm. Let the maximum number of nodes and
+edges in a pattern $Q$ mined by our method be $n_Q$ and $m_Q$, and those in a replica be
+$n_{\mathcal{R}}$ and $m_{\mathcal{R}}$, respectively. Finally,
+also assume that the maximum size of the forward node mapping set be $M$
+for some node in a frequent pattern mined by our algorithm.
+%
+\subsubsection{Time Complexity}
+We start with the complexity analysis of {\em replica creation} for a new pattern $Q$ (\S~\ref{sec:rep_generate}).
+For every mapping of the {\em extending edge} in $G$, we enumerate all possible
+instances of $Q$ using the replica subgraph of its parent pattern. There can be $\bigO(m)$
+matches for the extending edge, whereas the complexity of enumerating all possible
+instances of $Q$ using the parent's replica is bounded by $\bigO(M^{n_Q})$. Hence,
+the time complexity of building the replica of $Q$ is $\bigO(mM^{n_Q})$.
+
+The creation of  {\em proximity nodes index} (\S~\ref{sec:index})
+requires $h$-hop BFS from every frequent node in $G$,
+and hence it has total time complexity: $\bigO(n_f(n_h+m_h))$. In contrast, whenever a new frequent
+pattern is mined, one requires updating the {\em proximity patterns index}. This is performed
+by traversing every node in the replica of the new pattern, and then finding their $h$-hop frequent
+nodes using the proximity nodes index --- this has time complexity $\bigO(n_{\mathcal{R}}n_f)$. Since the pattern search tree
+$T$ has at most $n_T$ vertices, total time complexity due to updating of proximity patterns index is
+given by $\bigO(n_{\mathcal{R}} n_f n_T)$.
+
+Correlation computation (\S~\ref{sec:cor_compute}) between the new pattern $Q$ extracted from the search queue $\mathbb{C}$
+and an existing pattern in $T$ is essentially bounded by the complexity of enumerating all instances of $Q$ in its replica, i.e., $\bigO(M^{n_Q})$.
+Since $T$ has at most $n_T$ patterns, one performs $\bigO(n_T^2)$ correlation computations, which has time
+complexity $\bigO(n_T^2 M^{n_Q})$.
+
+Considering all above, the time complexity of our exact algorithm, {\sf CSM-E}
+\footnote{{\footnotesize We neglected times required for finding the best pattern
+from search queue $\mathbb{C}$, verifying its subgraph relationships
+with existing patterns in $T$, and computing its rightmost extensions,
+due to relatively smaller sizes of frequent patterns mined by our algorithm
+while finding the top-$k$ correlated pairs.}} is:
+$\bigO(M^{n_Q}(n_T^2+m)+n_{\mathcal{R}}n_fn_T+n_f(n_h+m_h))$. Notice that
+{\em we enumerate all instances of a pattern using its replica
+(or, the replica of its parent), thereby significantly improving the efficiency in comparison with
+na\"{\i}vely enumerating all instances over the entire data graph $G$}. Nevertheless, an exact enumeration of all instances,
+as given in Algorithm~\ref{algo:findallinstances}, is still expensive when the replica size is too large
+(thereby larger $M$). In \S~\ref{sec:approx_algo}, we shall introduce an approximate method for instances enumeration,
+which further improves the efficiency, without significantly affecting the accuracy of our solution.
+%
+\subsubsection{Space Complexity}
+The space complexity is bounded by the {\em replica size} and the {\em size of our index sets}: {\em forward node mapping}
+and {\em inverse node mapping}, as well as {\em proximity nodes} and {\em proximity patterns indexes}.
+Since we only store the replica of $\bigO(n'_T+1)$ patterns, this requires $\bigO((n_{\mathcal{R}}+m_{\mathcal{R}})n'_T)$ space.
+Both forward and inverse node mappings for a pattern $Q$ has size $\bigO(n_QM)$. Finally, proximity nodes
+and proximity patterns indexes require $\bigO(n_f^2)$ and $\bigO(n_fn_T)$ space, respectively.  Hence, the overall
+space complexity is given by: $\bigO((n_{\mathcal{R}}+m_{\mathcal{R}}+n_QM)n'_T+n_f^2+n_fn_T)$. 

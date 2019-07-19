@@ -1,23 +1,23 @@
-\chapter{Approximate Algorithm}
+\section{Exact Algorithm}
 \label{sec:exact_algo}
 
-\section{Overview}
+\subsection{Overview}
 \label{subsec:exact_algo_overview}
 
 \begin{observation}
 	\label{ob:frequency}
-	A pair of subgraphs having higher support values can be expected to 
+	A pair of subgraphs having higher support values can be expected to
 	have a higher correlation.
 \end{observation}
 
 \begin{observation}
 	\label{ob:dfs}
-	For highly (e.g., top-$k$) correlated subgraphs mining, generally a
+	\textcolor{red}{?}For highly (e.g., top-$k$) correlated subgraphs mining, generally a
 	breadth-first or a best-first exploration of the search space is more
 	efficient compared to a depth-first traversal of the search space.
 \end{observation}
 
-Setting $k$ to infinity would enable us to mine all pairs of correlated subgraph
+\textcolor{red}{?}Setting $k$ to infinity would enable us to mine all pairs of correlated subgraph
 patterns. However, on the contrary, it is hard to control the value of {\sf
 Min-sup} to get the result of a particular $k$ of {\sf Top-$k$} correlated
 subgraphs. That is to say, the {\sf Min-Sup} problem can be transfered from {\sf
@@ -25,8 +25,8 @@ Top-$k$} problem. As a result, we concentrate on {\sf Top-$k$} problem in the
 following sections.
 
 %% \setlength{\parskip}{0.3em}
-% \spara{\raggedleft \textbf{Pattern Search Tree.}} 
-\subsection{Search Tree}
+% \spara{\raggedleft \textbf{Pattern Search Tree.}}
+\subsubsection{Search Tree}
 \label{subsubsec:exact_algo_searchtree}
 All operations including correlation computation and subgraph pattern extension
 are performed on patterns following an exploration order on a \textit{search tree}.
@@ -44,13 +44,13 @@ computation is selected. Once operated, $Q$ is inserted into the
 % \subsection{Order of Subgraph Generation and Correlation Calculation}
 
 \par The correlated subgraph mining algorithm is an iterative procedure,
-essentially consisting of the following steps until convergence: 
+essentially consisting of the following steps until convergence:
 
 \spara {\raggedleft \textnormal{1)}} Select a node $Q\in Leaf(T)$ that has not
-been operated 
+been operated
 
-\spara {\raggedleft \textnormal{2)}} Calculate $\tau(Q,Q_j,h)$, \forall 
-$Q_j\in \textit{operated}$ 
+\spara {\raggedleft \textnormal{2)}} Calculate $\tau(Q,Q_j,h)$, $\forall$
+$Q_j\in \textit{operated}$
 
 \spara {\raggedleft \textnormal{3)}} Extend $Q$ using possible single-edged
 extensions to generate the set of "children" supergraphs of $Q$, \textit{children($Q$)}
@@ -68,33 +68,32 @@ $\sigma(R)\ge$ {\sf Min-Sup}, branch $T$ at $Q$ to include $R$ in $Leaf(T)$.
 % denoted as $corIndex(Q_i)=b$, which means $Q_i$ is the $b$-th subgraph in $T$
 % which and we put $Q_i$ into $Cor(T)$, i.e. $Cor(T)=Cor(T)\cap Q_i$.
 
-\subsection{Best-first Search}
+\subsubsection{Best-first Search}
 \label{subsubsec:exact_algo_bestfs}
 Observation \ref{ob:frequency} suggests that faster convergence of the algorithm
 could be expected if a subgraph pattern having a higher support is
 \textit{operated} preceding every other unoperated pattern in $Leaf(T)$. As a result, we
 use a heuristic to determine the priority of the leaf nodes in $Leaf(T)$
-for processing: $Q_1$ has a higher priority than $Q_2$ \forall $Q_1, Q_2 \in Leaf(T)$ if and only if:
-\begin{align*}\sigma(Q_1)>\sigma(Q_2)\end{align*}
+for processing: $Q_1$ has a higher priority than $Q_2$ $\forall$ $Q_1, Q_2 \in Leaf(T)$ if and only if:
+\begin{align}\sigma(Q_1)>\sigma(Q_2)\end{align}
 Utilizing such a best-first heuristic, if leaf node $Q_k$ in the search tree has
-the highest support among all other patterns in $Leaf(T)$, i.e. $\sigma(Q_k)=\max\{\sigma(Q_i)|Q_i\in Leaf(T),$ $Q_i$ $not$ $operated\}$, 
+the highest support among all other patterns in $Leaf(T)$, i.e. $\sigma(Q_k)=\max\{\sigma(Q_i)|Q_i\in Leaf(T),$ $Q_i$ $not$ $operated\}$,
 then $Q_k$ has the priorty to be operated and extended.
 \par To implement best-first exploration, we introduce a priority queue called \textit{Search Queue} that simply queues,
  at any given time, all unoperated patterns in $Leaf(T)$ with the priority being accorded to patterns with higher frequencies. Also,
- note that as described in step $4$ of the algorithm outline in Section \ref{subsubsec:exact_algo_searchtree}, we do not consider 
- infrequent patterns in $Leaf(T)$, therefore, \textit{Search Queue} only orders frequent patterns. 
+ note that as described in step $4$ of the algorithm outline in Section \ref{subsubsec:exact_algo_searchtree}, we do not consider
+ infrequent patterns in $Leaf(T)$, therefore, \textit{Search Queue} only orders frequent patterns.
 
-\subsection{Best-first Termination Criteria}
+\subsubsection{Best-first Termination Criteria}
 \label{subsubsec:exact_algo_ceasing}
-Our objective is to mine $k$ pairs of correlated subgraphs and guarantee that any other pair of subgraphs cannot have a higher correlation $(\tau)$ than any pair in such a {\sf Top-$k$} list. 
-A closer look at the properties mentioned in Section \ref{sec:characteristics} allows us to deduce the following: 
-assume $Q$ and $Q_j$ are two arbitrary frequent subgraphs of the data graph. 
+Our objective is to mine $k$ pairs of correlated subgraphs and guarantee that any other pair of subgraphs cannot have a higher correlation $(\tau)$ than any pair in such a {\sf Top-$k$} list.
+A closer look at the properties mentioned in Section \ref{sec:characteristics} allows us to deduce the following:
+assume $Q$ and $Q_j$ are two arbitrary frequent subgraphs of the data graph.
 We denote $super(Q)$ as the set of all possible supergraphs of $Q$. Then, for all $Q'\in super(Q)$ the following conditions always hold:
-
-\begin{align*} \tau(Q',Q_j,h)\le \sigma(Q') \quad (\textsc{Corollary to Lemma \ref{lemma:prune}})\end{align*}
-\begin{align*} \sigma(Q')\le \sigma(Q) \quad \quad (\textsc{downward-closure})\end{align*}
+\begin{align} \tau(Q',Q_j,h)\le \sigma(Q')\end{align}
+\begin{align} \sigma(Q')\le \sigma(Q) \end{align}
 It is easy to get the following upperbound on $\tau(Q',Q_j,h)$ by combining the two conditions above:
-\begin{align*} \tau(Q',Q_j,h) \le \sigma(Q) \end{align*}
+\begin{align} \tau(Q',Q_j,h) \le \sigma(Q) \end{align}
 Consider this upperbound: if $\sigma(Q)$ is lower than the least $\tau$ value in
 the {\sf Top-$k$} list, i.e. $\sigma(Q)<\tau(Q_a,Q_b,h)$ for all
 pairs $Q_a,\ Q_b$ among the {\sf Top-$k$}, then all correlations
@@ -111,11 +110,11 @@ any frequent subgraph left in \textit{Search Queue} to operate.
 
 \par Formally, we specify the two ceasing conditions for terminating search
 based on a best-first heuristic:
-\begin{align*} (1)\ \sigma(Q)\le min\{\tau(Q_a, Q_b, h)\ |\ (Q_a, Q_b)\in top\_k\},\ |top\_k|=k\end{align*}
-\begin{align*}(2)\ Search\ Queue = \emptyset\end{align*}
+\begin{align} \sigma(Q)\le min\{\tau(Q_a, Q_b, h)\ |\ (Q_a, Q_b)\in \textnormal{top-}k\},\ |\textnormal{top-}k|=k\end{align}
+\begin{align} Search\ Queue = \emptyset\end{align}
 
 In both these cases, we cease search and report all pairs of correlated
-subgraphs discovered along with $\tau$ values. 
+subgraphs discovered along with $\tau$ values.
 
 %\eat{
 \begin{figure}[t!]
@@ -136,15 +135,246 @@ subgraphs discovered along with $\tau$ values.
 	$\tau$ value among the {\sf top-$3$} pairs is $\tau{_{min}}=4$. After this,
 	$Q_1$ is extended to $Q_2$ and $Q_3$. After extension, assume $\sigma(Q_2)<${\sf
 	Min-sup} and $\sigma(Q_3)=$ {\sf Min-sup}. Thus, \emph{Search\ Queue} now only
-	consists of $Q_3$ since $Q_2$ is not frequent. 
+	consists of $Q_3$ since $Q_2$ is not frequent.
 	But since $\sigma(Q_3)<\tau{_{min}}$ and there are already $3$ pairs in {\sf top-$k$}, i.e.
 	$|top\_k|=3$ any correlation of $Q_3$ or $Q_2$ would not displace existing
 	{\sf top-$k$} pairs. Thus, we cease search.
 \end{exple}
 
+\subsubsection{Extension Rule}
+We assign pattern vertex indices for all $V_i\in V(Q)$ to identify their order of discovery.
+\begin{defn}[Vertices Subscripting] For all $Q\in T$, apart from vertex
+	identification $V_i$, we use another convention to label the vertices in $Q$
+	by the \textbf{order} of discovery leading to pattern $Q$, denoted as
+	$S_Q=(S_0,S_1,...,S_n)$, $n=|V_Q|$. Thus, $\forall S_i, S_j$, if $i<j$, then
+	the vertex $V_i$ is discovered earlier than the vertex $V_j$.
+\end{defn}
 
+Taking advantage of this convention, it is easy to get the right-most path of a
+subgraph. $Q$ is then extended only from vertices along the right-most path in
+single-edged extensions to generate $children(Q)$ which continue the search. Algorithm
+\ref{algo:extension} captures this procedure.
 
-\section{Replica-based Graph Instance Storage}
+\eat{
+\begin{algorithm}
+	\dontprintsemicolon
+	\nonl \textbf{Input:} Graph $G$, parent $Q$, $replica(Q)$ \;
+	\nonl \textbf{Output:} $Ex(Q)$: set of candidate edge extensions for $Q$\;
+	$Ex(Q)\coloneq \emptyset$ \;
+	$rmpath \leftarrow$ right-most path of $Q$ from $DFS\ Code(Q)$\;
+	\ForEach{$v\in rmpath$}
+	{
+		\ForEach{$v'\in Mappings(v,replica(Q))$}
+		{
+			$E\leftarrow$ set of all edges $(v',w')\in E(G)$ extending $Q$\;
+			$Ex(Q)\leftarrow Ex(Q)\cup E$
+		}
+	}
+	\Return{$Ex(Q)$}
+	\caption{\textsc{SubgraphEdgeExtensions}}\label{algo:extension}
+\end{algorithm}
+}
+\textsc{SubgraphEdgeExtensions} iterates over every mapping $v'\in
+V(replica(Q))$ for every $v\in rmpath($Q$)$ and attempts to extend $Q$ using a
+single-edge extension. The set of all valid candidate edge extensions, $Ex(Q)$ thus
+obtained is returned.
+
+\subsubsection{Duplicated Subgraph Prunning}
+To avoid the duplicated subgraph judgement, we take the advantage of the DFS
+code, and the minimum DFS code in gSpan\cite{YH02}, whenever a subgraph is
+constructed we compute its minimum DFS code, denoted as $DFS\ Code(Q)$.
+
+\par We use a dictionary $\mathbb{D}$ to store all the minimum $DFS\ codes$ we have
+discover. When a subgraph $Q$ is discovered, we perform a lookup for $DFS\ Code(Q)$ in the
+dictionary. If $DFS$ $Code(Q)$ $\in$ $\mathbb{D}$, then $Q$ must have been discovered before,
+so we prune $Q$.
+
+\textcolor{red}{completeness theorem pending}
+
+\subsubsection{Mining Algorithm}
+\label{subsec:miningalgo}
+The complete mining algorithm consists of an initialization step and the search
+algorithm to compute top-\textit{k} pairs of correlated subgraph patterns. The
+details of these procedures are described in the following subsections.
+\subsubsection{Initialization}
+\label{subsec:initialization}
+Algorithm \ref{algo:initialization} specifies the step-by-step operations of the
+initialization procedure.
+
+\begin{algorithm}%[h!]
+	\caption{\textsc{CorrelatedSubgraphMining}}\label{algo:csm_}
+	\dontprintsemicolon
+	% \nonl \textbf{Subroutine \ref{algo:csm_}.1:} \textsc{Initialization}\;
+	% \vspace{0.3mm}
+	\nonl \textbf{Input:} Graph $G$, {\sf Min-Sup:} $min\_sup$, hop value: $h$\;
+	\nonl \textbf{Output:} top-$k$ pairs of correlated subgraph patterns  \;
+	% \nonl \textbf{Output:} frequent edges set: $F\_edges$, proximate vertices index: $CorV$, modified data graph: $G$ \;
+	\vspace{0.3mm}
+	\nonl \textit{// Initialization } \;
+	\vspace{0.3mm}
+	$F\_edges\leftarrow \{e\ |\ e \in E(G),\ \sigma(e) \geq min\_sup \}$\;
+		\ForEach{\textup{$u \in V(G)$ such that $(u, u')\ \in\ F\_edges$\ \ }}
+		{\textsc{BFS} from $u$ to all $v\in V(G)$, such that min distance
+		$d(u,v)\le h$\; $CorV(u) \leftarrow$ set of all $v$ obtained above\;}
+		$NF\_edge\leftarrow E(G)\setminus F\_edge$ \; Remove $NF\_edge$ from
+		$E(G)$\; 
+		% \Return {$F\_edges,\ CorV,\ G$}\;
+	\vspace{1mm}
+	% \setcounter{AlgoLine}{0}
+	% \vspace{0.3mm}
+	\nonl \textit{// Search } \;
+	% \nonl \makebox[0.5*\textwidth][s]{\textbf{Input:} $G$, $min\_sup$, $F\_edges$, $CorV$, patterns dictionary: $\mathbb{D}$}\;
+	% \nonl \textbf{Output:} top-$k$ pairs of correlated subgraph patterns  \;
+	\vspace{0.3mm} 
+	Initialize {\sf Search Queue} with $F\_edges$ \;
+		\While{\textup{\textsc{CeasingCondition} is not satisfied}}
+		{
+			subgraph $Q \leftarrow$ {\sf Search\
+			Queue.Pop()}\;
+			Compute all correlation values for $Q$\;
+			\nonl $[[\textnormal{Execute}\ \textsc{Operate($Q$)}$ (Section \ref{subsec:corrcomp})$]]$\;
+			% with all operated patterns $Q_k$: $\tau(Q, Q_k, h)$ \;
+			% Execute \textsc{Operate($Q$)}\;
+			$Ex(Q) \leftarrow $ \textsc{SubgraphEdgeExtensions($Q$)}\;
+			\ForEach{\textup{candidate edge} $e(u,v)\in Ex(Q)$}
+			{
+				child $Q'\leftarrow Q$ extended with $e$\;
+				\uIf{$DFS\ Code(Q') \notin \mathbb{D}$}
+				{
+					% $replica(Q') \leftarrow $ \textsc{GetReplica($Q', u, e, \dots$)}\;
+					Compute $\sigma(Q')$ \;
+					% from $replica(Q')$\;
+					\uIf {$\sigma(Q')\geq min\_sup$}
+					{
+						Push $Q'$ into \textsc{SearchQueue}\;
+					}
+					Record $DFS\ Code(Q')$ in $\mathbb{D}$\;
+				}
+				\Else
+				{
+					continue\;
+				}
+			}
+		}
+		\Return {\textup{top-$k$ correlated pairs}}\;
+\end{algorithm}
+The algorithm begins with a brute-force search to obtain all frequent edges in
+the data graph (line 2). Once the set of frequent edges (stored in variable
+$F\_edges$) is computed, the algorithm executes a breadth-first search (BFS)
+procedure (line 4) for every vertex $u$ that constitutes an edge in $F\_edges$
+to obtain all vertices satisfying the hop constraint with respect to $u$. The
+set of these vertices is stored in the $CorV$ dictionary mapped to $u$ (line 5).
+Thus, the set of proximate vertices for every vertex constituting a frequent
+edge is obtained and stored. Finally, the algorithm deletes the set of
+infrequent edges from $G$ to obtain the modified data graph (lines 7-8).
+Infrequent edges are removed since these have no bearing on the algorithm
+hereafter and doing so accelerates the search procedure.
+% The first step is get all the frequent edges of the data graph (line ). Then,
+% for every vertex of the frequent edges, we use BFS to get all the other
+% vertices which satisfies the hop-constraints with it (line ). We put the
+% result in the distance index set after the BFS of one vertex and we get all
+% the proximity vertex set of every vertex (line ). We use this union set as the
+% original distance index. This index set contains everything of proximity
+% vertices but contains nothing of proximity patterns. We will use this original
+% set to create and maintain the index of proximity patterns, specified in
+% Section \ref{subsec:search-steps}. Finally, we remove the infrequent edges
+% from the data graph (line ) because they are useless after initialization and
+% removing them could accelerate the search.
+
+\subsubsection{Search Steps}
+\label{subsec:search-steps}
+Following the initialization, the search algorithm as specified in
+Algorithm~\ref{algo:searchsteps} is executed.
+\eat{
+\begin{algorithm}
+	\dontprintsemicolon
+	\caption{\textsc{Search}}\label{algo:searchsteps}
+	\nonl \textbf{Input:} Graph $G$, {\sf Min-Sup:} $min\_sup$, frequent edges
+	set: $F\_edges$, $CorV$, Generated patterns dictionary: $\mathbb{D}$ \;
+	\nonl \textbf{Output:} $top\_k$ pairs of correlated subgraph patterns  \;
+	Initialize {\sf Search Queue} with $F\_edges$ \;
+	\While{\textup{\textsc{CeasingCondition} is not satisfied}}
+	{
+		subgraph $Q \leftarrow$ {\sf Search\
+		Queue.Pop()}\;
+		Execute \textsc{Operate($Q$)}\;
+		$Ex(Q) \leftarrow $ \textsc{SubgraphEdgeExtensions($Q$)}\;
+		\ForEach{\textup{candidate edge} $e(u,v)\in Ex(Q)$}
+		{
+			child $Q'\leftarrow Q$ extended with $e$\;
+			\uIf{$DFS\ Code(Q') \notin \mathbb{D}$}
+			{
+				$replica(Q') \leftarrow $ \textsc{GetReplica($Q', u, e, \dots$)}\;
+				Compute $\sigma(Q')$ from $replica(Q')$\;
+				\uIf {$\sigma(Q')\geq min\_sup$}
+				{
+					Push $Q'$ into \textsc{SearchQueue}\;
+				}
+				Record $DFS\ Code(Q')$ in $\mathbb{D}$\;
+			}
+			\Else
+			{
+				continue\;
+			}
+		}
+	}
+		\Return {$top\_k$ \textup{correlated pairs}}\;
+	% \end{algorithmic}
+\end{algorithm}
+}
+
+The algorithm begins with the initialization of a priority queue called
+\textit{Search Queue} (line 1) that stores subgraph patterns scheduled for
+correlation computation with the property that a pattern with a higher
+MNI-support is accorded a higher priority following the best-first search
+strategy (Section~\ref{subsubsec:estimating}). \textit{Search Queue} is
+initialized with the set of frequent edges (queued in the order of decreasing
+support values). During search, as long as the \textit{ceasing condition}
+(Section~\ref{subsubsec:ceasing}) remains unsatisfied, the subgraph pattern at
+the front of \textit{Search Queue} is selected for correlation computation and
+extension. Correlation computation takes place in method \textsc{Operate}
+(Algorithm~\ref{algo:operate}) wherein the top-$k$ set can also be
+updated. This is followed by the computation of all possible one edge extensions
+in $Q$ in method \textsc{SubgraphEdgeExtensions} (line 5). For every candidate
+extension in $Ex(Q)$, the DFS Code of the resulting child subgraph pattern $Q'$
+is tested for presence in dictionary $\mathbb{D}$. A match in $\mathbb{D}$
+indicates that $Q'$ has already been generated previously, so the algorithm
+proceeds with the MNI-support computation only if there is no match (line 8).
+MNI-support computation for $Q'$ requires the construction of its \textit{replica}
+structure, which the algorithm computes and stores through the invocation of
+\textsc{GetReplica} method described (line 9). Note that the \textit{replica} structure
+for a child pattern not only establishes the MNI-support but also allows
+correlation computation in method \textsc{Operate}. If the child pattern's
+MNI-support value exceeds the threshold \textit{min\_sup}, it is pushed into
+\textit{Search Queue} (line 12) to be (possibly) processed in a later iteration of
+the outer loop. \textit{DFS\_Code(Q')} is recorded in $\mathbb{D}$ (line 14).
+% During the search step, if the ceasing condition in Section
+% \ref{subsubsec:ceasing} is not satisfied, we select a subgraph $Q$ in
+% $Leaf(T)$ according to the criteria in Section \ref{subsubsec:estimating}
+% (line ). Then we process event {\sf Op($Q$)}, which calculate the correlation
+% of $Q$ and put the result into {\sf Top-$k$} set if it satisfies the condition
+% specified in Section \ref{sec:calculation} (line ), and extend $Q$ to a larger
+% subgraph with one edge growth. If the new extension $Q'$ satisfies the MNI
+% support, we process event {\sf Found($Q'$)} (line ). The loop goes on until
+% the ceasing condition is satisfied.\\
+% \begin{observation} \label{ob:frequency} If two subgraphs have higher support
+% values individually, it is very likely that the pair will also have a higher
+% correlation. \end{observation}
+
+% \begin{observation} \label{ob:dfs} For highly (e.g., top-$k$) correlated
+% subgraphs mining, generally a breadth-first or a best-first exploration of the
+% search space is more efficient compared to a depth-first traversal of the
+% search space. \end{observation}
+
+% Obviously, by setting $k$ to infinity can we mine all the correlated
+% subgraphs. However, on the contrary, it is hard to control the value of {\sf
+% Min-sup} to get the result of a particular $k$ of {\sf Top-$k$} correlated
+% subgraphs. That is to say, the {\sf Min-Sup} problem can be transfered from
+% {\sf Top-$k$} problem. As a result, we concentrate on {\sf Top-$k$} problem in
+% the following sections.
+
+%Replica-based Graph Instance Storage subsection**************************************************************************************************
+\subsection{Replica-based Graph Instance Storage}
 \label{subsec:replica-storage}
 As discussed in Section \ref{sec:problem}, computing $\sigma$ and $\tau$
 values requires knowledge of a pattern's \emph
@@ -153,22 +383,22 @@ data graph. In a dense graph, the number of instances of a pattern can be
 prohibitively large to store for each pattern so methods like \textsc{GrowStore} have limited
 scope. In this section, we describe an elegant approach for performing subgraph
 isomorphism using the \textbf{Replica Structure}.
- 
-\subsection{Replica Structure}
+
+\subsubsection{Replica Structure}
 \label{subsubsec:replica-ds}
  Considering the large amount of overlaps of instances in dense graphs,
  we use a novel yet simple data structure to "store" all instances of a subgraph
  pattern, which not only solves potential memory issues that arise while
- tackling dense graphs, but also lays a robust foundation for carrying out
+ handling dense graphs, but also lays a robust foundation for carrying out
  efficient correlation calculations based on instance grouping (Section \ref{sec:problem}).
 \par Instead of storing every instance of a pattern, we just create a reproduce
  of all occurrences of the vertices and the edges of the pattern in the data graph. We call the
- structure a \textit{replica} graph. We record all the vertex identifications
+ resulting subgraph of $G$ a \textit{replica} graph. We record all the vertex identifications
  and the edge connections in the \textit{replica} graph. In other words, a \textit{replica} graph is essentially a
- "minimal" subgraph \textit{G'} of data graph \textit{G} such that every
+ "minimal" subgraph ${G'}$ of data graph \textit{G} such that every
  instance of a pattern $Q$ in $G$ and every such instance only can be found in
  $G'$.
- 
+
 \eat{
 \begin{figure}%[h!]
 	% \vspace{-2mm}
@@ -200,19 +430,32 @@ isomorphism using the \textbf{Replica Structure}.
 \end{figure}
 }
 % \newline
-\newline
-% As {\sf Found($Q$)} occurs, we store the replica of $Q$ as a unit of the search tree. 
+%\newline
+% As {\sf Found($Q$)} occurs, we store the replica of $Q$ as a unit of the search tree.
 
 Figures \ref{fig:exactq} and \ref{fig:exactrepq} illustrate a pattern and its
-corresponding \emph{replica} graph. A \emph{replica structure} consists of not
+corresponding \emph{replica} graph. A \emph{replica \textbf{structure}} consists of not
 just the \emph{replica graph}, but also two maps, as
-defined below. 
+defined below.
 
 \eat{
 After $Q$ has been $operated$, we remove $replica(Q)$ from memory.
 }
-
-\spara{\raggedleft Replica Structure.} Consists of the following three
+\begin{defn}[Replica Structure]
+	For a subgraph $Q \in $ search tree $T$ with data graph $G$, the
+	\emph{replica structure} for $Q$, $replica(Q)$ is defined to consist of
+	three structures: \newline
+	\emph{(1) Replica Graph}: occurrence graph of $Q$ in $G$ characterized by
+	$V(replica(Q)) (\subseteq V(G))$ and $E(replica(Q))(\subseteq E(G))$, the set of vertices and edges respectively.
+	\newline
+	\emph{(2) Mappings index}: $\forall u \in
+	V(Q),\ Mappings(u, replica(Q))$ stores the set of all vertex identifications
+	$v\in V(replica(Q))$ of $u$ \newline
+	\emph{(3) Inverse-Mappings index}: $\forall v \in V(replica(Q)),\ Inverse$- $Mappings$ $(v, Q)$ stores the set of all $u\in V(Q)$ such
+	that $v\in Mappings(u,$ $replica(Q))$
+\end{defn}
+\eat{
+\spara{\raggedleft \textnormal{A \textit{replica structure}}} consists of the following three
 structures constructed for each pattern $Q\in T$ for a data graph $G$:
 
 \spara {\raggedleft \textnormal{1)}} \textit{Replica Graph}: occurrence
@@ -224,18 +467,22 @@ $v\in V(replica(Q))$ of $u$
 
 \spara {\raggedleft \textnormal{3)}} \textit{Inverse Mappings}: $\forall v \in
 V(replica(Q)),\ InverseMappings$ $(v, Q)$ stores the set of all $u\in V(Q)$ such
-that $v\in Mappings(u,$ $replica(Q))$
-
-\spara {\raggedleft \textnormal{Both}} \emph{Mappings} and \emph{Inverse
-Mappings} can be deduced from the \emph{replica} graph, however we still maintain
-these indexes for computational gains. 
-
+that $v\in Mappings(u,$ $replica(Q))$} {\raggedleft \textnormal{Both}}
+\emph{Mappings} and \emph{Inverse-Mappings} can be deduced from the \emph{replica}
+graph using subgraph isomorphism, however we still maintain these indices for
+computational efficiency: \emph{Mappings} index allows us to readily compute the
+MNI-support and also jump directly to vertices of the \emph{replica} graph
+identifying with a \emph{pattern} vertex, while \emph{Inverse-Mappings} index
+enables us to quickly prune candidate vertices of the \emph{replica} graph for
+matching a \emph{pattern} vertex while performing isomorphism. The significant
+computational gains obtained due to these indices will become clear in
+Section \ref{subsubsec:replica-gen}.
 
 % \\2) For each $u_i\in Q$, there is a hash-map, $R_i(Q)$, recording the vertex
 % identifications, and $R(Q)=(R_1(Q), R_2(Q), ..., R_{|V_Q|}(Q))$.
 % \\3) For each element $v\in R_i(Q)$, there is a record of all the other vertices which $v$ is connected to in the occurrences of $Q$.
 
-\subsection{Generation of a Replica Graph}
+\subsubsection{Generation of a Replica Graph}
 \label{subsubsec:replica-gen}
 Algorithms 1 and 2 together describe the complete procedure to construct the
 \emph{replica} structure for a subgraph pattern, henceforth referred to as
@@ -246,80 +493,86 @@ $Q$ and $Q$ as the \textit{parent} pattern of $R$. Since the search procedure
 processes a pattern only after its parent, the \emph{replica} of the
 parent pattern can be used for constructing the \emph{replica} of the
 child.
-% \begin{algorithm}
-% 	\DontPrintSemicolon
-% 	\dontprintsemicolon
-% 	\KwIn{Training sentences $S_{i}$}
-% 	\KwOut{Sentence instances with cost-vectors for training $S_{i,c_i}$}
-% 	\SetKwBlock{Begin}{function}{end function}
-% 	\Begin($\text{generateCosts} {(} EV_{i,v,r} {)}$)
-% 		{
-% 	$S_{i,c_{i}} = \left[ \right]$\;
-% 		\ForAll{$s \in S, v \in EV $}
-% 		{
-% 			$c_{i} = \left\lbrace \right\rbrace$\;
-% 			set $region \; r = EV_{i,r}$\;
-% 			\For{$p \leftarrow 1, properties$}
-% 			{
-% 				$c_{i,p} \coloneqq cost \left( kb_{r,p},v_{i,r} \right)$\;
-% 				\uIf{$c_{p} > Cost_t$}
-% 				{
-% 					$c_{p} \coloneqq \infty$
-% 				}
-% 				\Else
-% 				{
-% 					continue
-% 				}
-% 			}
-% 			\uIf{$\min \left( c \right)  > APE_t$}
-% 			{
-% 				$c_{i,no\_property} \coloneqq 0$
-% 			}
-% 			\Else
-% 			{
-% 				$c_{i,no\_property} \coloneqq \infty$
-% 			}
-% 			$\text{push} \left( S_{i,c_{i}}, \left( s,c_{i} \right) \right)$
-% 		}\label{endfor}
-% 		\Return{$S_{i,c_{i}}$}
-% 	}
-% 	\caption{Cost-Vector Algorithm}\label{costalgorithm}
-% \end{algorithm}
+
+\textsc{NextQueryEdge($DFS\ List(Q)$)}: returns edges of pattern $Q$ from $DFS\
+List(Q)$ in order. Edge $e(p,c)$ returned connects vertices $p$ and $c$ such
+that $c$ followed $p$ in the $DFS$ order and thus $c$ is referred to as $child$
+of $p$. The invariant is that $p$ has already been matched to a vertex $v'\in
+V(replica(Q))$ and $c$ is to be matched next, that is, in the current recursive
+invocation. 
+
+\textsc{FilterCandidates($instance$, $c$, $replica(Q)$)}: computes and returns
+the set of all vertices $w'\in V(replica(Q))$ that are candidates for matching a
+pattern vertex $c$ (assume \textsc{NextQueryEdge($DFS\ List(Q)$)} returned
+$e(p,c)$ where $c\in children(p)$ and $instance(p)=v'$). It selects all candidates $w'$ such that:
+$(1)$:  $w'$ is in the adjacency list of $v'$ in $replica(Q)$ graph, $(2)$: $c$
+is contained in $InverseMappings(w', replica(Q))$ which indicates that there
+exists at least one instance of $Q$ in which $w'$ was mapped to $c \in V(Q)$,
+and $(3)$: the edge label of $(v',w')\in E(replica(Q))$ matches that of $(p,c)
+\in E(Q)$.
+
+\textsc{UpdateReplica($R$, $replica(R)$, $\mathbb{I}$)}: Updates the replica
+structure of $replica(R)$ in the following manner: $(1)$: every vertex and every
+edge in every instance $I\in
+\mathbb{I}$ is appended to $V(replica(R))$ and $E(replica(R))$ respectively.
+$(2)$: $Mappings(u, replica(R))$ is updated for all $u \in V(R)$ such that it
+contains all mappings of $u$ found in instances of $\mathbb{I}$. $(3):$
+$InverseMappings(v,Q)$ is updated for every vertex $v$ found in an instance in
+$\mathbb{I}$ such that it stored the pattern vertex $u$ that it was matched to
+in the instance.
+
 
 \begin{algorithm}
-	% \begin{algorithmic}[1] 
-	% \REQUIRE input graph: $G$, parent pattern: $Q$, replica of $Q$: $replica(Q)$, extending index: $u$, tuple of extension vertex label and extension edge label: $candidate\ edge$, child pattern: $R$
-	% \ENSURE all mappings of child pattern $R$ in $G$ (that is, the replica of $R$: $replica(R)$ in $G$)
+	\caption{\textsc{GetReplica}}\label{algo:getreplica_}
 	\dontprintsemicolon
-	% \KwIn{Graph $G$, parent: $Q$, $replica(Q)$, extending index: $u\in V(Q)$, extension: $candidate\ edge$, child: $R$}
 	\nonl \textbf{Input:} Graph $G$, parent $Q$, $replica(Q)$, child $R$, extending vertex: $u\in V(Q)$, extension: $candidate\ edge (u,v) \in E(R)$\;
-	% \KwOut{$replica(R)$}
 	\nonl \textbf{Output:} $replica(R)$ \;
-	% \SetKwBlock{Begin}{function}{end function}
-	% \Begin($\text{generateCosts} {(} EV_{i,v,r} {)}$)
-	% {		
-	$DFS\ List\leftarrow$ get rooted \textsc{DFS} of $Q$ with $u$ as $root$ \;
-	$instance \coloneq \emptyset$\;
+	\vspace{0.3mm}
+	$DFS\ List(Q)\leftarrow$ get rooted \textsc{DFS} of $Q$ with $u$ as $root$ \;
+	$instance \leftarrow \emptyset, $ $ \mathbb{I} \leftarrow \emptyset$\;
 	\ForEach{ $u' \in Mappings(u,\ replica(Q))$}
 	{
 		$instance\leftarrow \{(u,u')\}$ \;
 		\ForEach{\textup{edge} $e(u',v')\in E(G)$ \textup{that maps to} $candidate\ edge (u,v)$}
 		{
 			$instance\leftarrow instance \cup \{(v,v')\}$\;
-			$\mathbb{I}\leftarrow$ \textsc{FindAllInstances($R$, $instance$, $\mathbb{I}$, $DFS\ List$, ...)}\;
-			\textsc{UpdateReplica($replica(R)$, $\mathbb{I}$, ...)}\;
+	$\mathbb{I}\leftarrow$ \textsc{FindAllInstances($Q$, $replica(Q)$, $R$,
+	$DFS\ List(Q)$, $instance$, $\mathbb{I}$)}\;
+			\textsc{UpdateReplica($R$, $replica(R)$, $\mathbb{I}$)}\;
 			$instance\leftarrow instance \setminus \{(v,v')\}$\;
-			% Append all edges in $\mathbb{I}$ to $replica(R)$ and update the mappings list for every vertex\;
 		}
 		$instance\leftarrow instance \setminus \{(u,u')\}$\;
 	}
-	\Return{$replica(R)$}
-	% }
-	\caption{\textsc{GetReplica}}\label{algo:getreplica}
-	% \end{algorithmic}
+	\Return{$replica(R)$}\;
+	\vspace{2mm}
+	\setcounter{AlgoLine}{0}
+	\nonl \textbf{Subroutine \ref{algo:getreplica_}.1:} \textsc{FindAllInstances
+	(Exact)} \;
+	\vspace{0.3mm}
+	\nonl \textbf{Input:} $G$, parent $Q$, $replica(Q)$, child $R$, $DFS\ List(Q)$, partial isomorphism of $R$: $instance$, $\mathbb{I}$\;
+	\nonl \textbf{Output:} $\mathbb{I}: $ set of all instances of $R$ in $G$ consistent with input partial isomorphism $instance$\;
+	\uIf{$|instance|=|V(R)|$}
+	{
+		\Return{$instance$}
+	}
+	\Else
+	{
+		$e(p,c) \leftarrow$ \textsc{NextQueryEdge($DFS\ List(Q)$)}\;
+		$v' \leftarrow instance(p)$\;
+		$P_{c} \leftarrow$ \textsc{FilterCandidates($v'$, $c$, $Q$, $replica(Q)$)}\;
+		\ForEach{$w' \in P_{c}$ \textup{such that w' is not matched}}
+		{
+			$instance \leftarrow instance \cup \{(c,w')\}$\;
+		$\mathbb{I} \leftarrow \mathbb{I}\ \cup$ \textsc{FindAllInstances($Q$,
+		$replica(Q)$, $R$, $DFS\ List(Q)$, $instance$, $\mathbb{I}$)}\;
+			$instance \leftarrow instance \setminus \{(c,w')\}$\;
+		}
+		\Return{$\mathbb{I}$}\;
+	}
 \end{algorithm}
 
-Algorithm 1 essentially describes a backtracking procedure to find every instance (also referred to as
+Algorithm 1 essentially describes a backtracking procedure
+\textcolor{red}{[refX:D.Knuth]} to find every instance (also referred to as
 \emph{isomorphism} or \emph{mapping}) of the child pattern in the data graph $G$
 using the mappings of the parent pattern and thus obtain its \emph{replica}. The
 algorithm begins with a depth-first search ({\sf DFS}) procedure (line 1)
@@ -333,212 +586,8 @@ attempts to find all (if any) instances of child $R$ in $G$ one-by-one. More
 specifically, for every vertex $m \in V(replica(Q))$ that maps to the
 \emph{extending vertex} $u$, the algorithm iterates over its adjacent edges $e
 \in E(G)$ that map to the \emph{candidate edge} (line 5) and invokes
-\textsc{FindAllInstancesApprox} (Algorithm \ref{algo:approx-instances}) to find
-every instance of $R$ from \emph{replica($Q$)} that contains $e$. 
-
-Exact \textit{replica} construction (Appendix I) for a
-subgraph pattern requires searching for every instance of the pattern in the
-data graph using the \textit{replica} of its parent pattern. In
-\textsc{FindAllInstances} (Appendix I), we identify
-all instances one-by-one in a depth-first guided search. However, performing
-this computation can be expensive since subgraph isomorphism is known to be an
-\textit{NP-hard} problem and thus the computational complexity is worst-case
-exponential in the pattern size. Moreover, the number of instances of a pattern
-generally grows exponentially with increasing density and size of the data
-graph. As a result, a \emph{complete} enumeration of instances such as in
-Algorithm A.1 does not scale well to dense or large
-graphs. This establishes the need for a faster strategy for \textit{replica}
-construction.
-
-We now make an important observation: to match a vertex $v\in V(G)$ and
-appropriate edges incident to $v$ in $V(replica(R))$  and $E(replica(R))$
-respectively for a pattern $R$, the identification of \textit{all} instances of
-$R$ containing $v$ might not be necessary. In other words, by identifying more
-instances containing $v$ than might be necessary, we do not gain any additional
-information about the \textit{replica} graph structure. This suggests that
-repeated traversals on vertices during the course of identifying instances can
-perhaps be reduced without losing structural information about the
-\textit{replica}.
-
-Algorithm \ref{algo:approx-instances} describes an approximate method to
-implement the idea for accelerated
-\textit{replica} construction by reducing repeated traversals on
-"already-explored" vertices. We attempt to avoid enumerating those instances
-during construction that do not provide new information about the \emph{replica}
-structure as a strategy to reduce computational complexity. Before discussing
-this method, we define some additional data structures for the \textit{replica}:
-% However, the strategy also could miss identifying a few relevant instances in
-% certain cases which could possibly result in the loss of some information
-% about the \textit{replica} graph and its mappings lists (Section
-% \ref{subsubsec:replica-ds}). Consequently, the \textit{replica} $R_a$ thus
-% obtained would be an \textbf{approximation} of the complete \emph{replica}
-% $R_c$ such that $V_{R_a} \subseteq V_{R_c}$ and $E_{R_a} \subseteq E_{R_c}$ .
-% In Section \ref{sec:experiments}, we demonstrate empirically that such an
-% approximation scheme, while enabling computational tractability, does not
-% significantly affect quality of the top-\textit{k} results. 
-
-%!!!write that misses are insignificant as proved in the experiments write that
-%!!!approximation means missing correct not including incorrect mappings
-
-% Algorithm \ref{algo:approx-instances} describes this approximation scheme.
-
-
-\para{$\bullet$ Potential children set ${P_{v,c}}$} \\
-(defined for each $v\in V(replica(Q))$ mapped to $p\in V(Q)$ for each child
-$c\in children(p,Q) \in V(Q)$): stores every replica vertex $w\in
-V(replica(Q))$ such that $c\in children(p,Q)$ can potentially map to $w$ (i.e. $w$ is
-a candidate for $c$).
-
-\para{$\bullet$ Enumerated set ${E_v}$} \\
-(defined for each $v\in V(Q)$): stores every vertex $w\in replica(Q)$ that maps
-to $v$ such that: $\forall c\in children(v,Q),\ P_{v,c}=\emptyset$. In other
-words, $E_{v}$ stores all its mappings that have been "fully-explored" for all
-child mappings. 
-
-% $v$ has been
-% fully-explored for all possible child mappings below it.
-
-\para{$\bullet$ Confirmed children set ${C_{v,c}}$} \\
-(defined for each $v\in V(replica(Q))$ mapped to $p\in V(Q)$ for each child
-$c\in children(p,Q) \in V(Q)$): stores every replica vertex $w\in V(replica(Q))$
-such that: (1) there exists at least one instance including the mappings $(p, v)$ and
-$(w,c)$, and (2) $w \in E_{c}$  
-
-%(Algorithms \ref{algo:search} and \ref{algo:complete-instances}) requires and
-% correlation computation 
-
-Algorithm \ref{algo:approx-instances} is a recursive algorithm. In the general
-(recursive) case (lines 5-30), it begins by invoking \textsc{NextQueryEdge}
-which returns one edge at a time from $E(Q)$ in the order of the rooted $DFS\
-List$. Edge $e(p,c)$ thus returned connects vertices $p,c \in V(Q)$ such that
-$c\in children(p)$ as per the $DFS\ List$ and $c$ is the pattern vertex to be
-matched next ($p$ is matched to $v \in V(replica(Q))$). The algorithm then
-checks for the existence of the potential children set for storing candidate
-vertices for matching $c$, given that $p$ is mapped to $v$. If this set
-$P_{v,c}(\subseteq V(replica(Q)))$ does not exist, it is computed by invoking
-\textsc{FilterCandidates} which stores all vertices $w\in V(replica(Q))$ such
-that: (1) $w$ is contained in the \textit{replica} adjacency list of $v$; (2)
-$c$ exists in the inverse mapping list of $w$. That is, \forall $w \in P_{v,c}$,
-$c\in InverseMap(w)$; (3) The edge label of $(v,w)\in E(replica(Q))$ matches
-that of $(p,c)\in E(Q)$. Thus, set $P_{v,c}$ is constructed once when a match
-for $c$ is being sought for the first time with $p$ having been mapped to $v$,
-and indexed. Similarly, confirmed children set $C_{v,c}$ is initialized as an
-empty set and indexed. In the event of any subsequent visit, the algorithm
-simply considers candidates remaining in $P_{v,c}$ for matching $c$. Next, for
-every vertex $w \in P_{v,c}$ such that $w$ has not already been mapped to some
-other pattern vertex in the current $instance$, the algorithm attempts the
-mapping $(c,w)$ in $instance$ and recursively calls
-\textsc{FindAllInstancesApprox} to match remaining pattern vertices following
-the $DFS\ List$ of edges. It sets a boolean $InstanceFound$ to $True$ if it
-finds at least one $instance$ in the recursive call and appends the set of all
-found instances to $\mathbb{I}$. During the recursive call, if $w$ gets inserted
-into the enumerated set for $c$ ($E_c$), it is transferred from $P_{v,c}$ to
-$C_{v,c}$. Finally, $(c,w)$ is removed from $instance$ and the next valid
-candidate in $P_{v,c}$ tried as a possible matching for $c$ in the following
-iteration. Suppose, the algorithm fails to find any $instance$ even after
-considering every $w\in P_{v,c}$. (A possible scenario where this could happen
-is if $P_{v,c}=\emptyset$, after all original candidates have been confirmed and
-transferred to $C_{v,c}$). In such a scenario, $InstanceFound$ would remain
-false after the first loop. The algorithm would then start iterating over
-$C_{v,c}$, the set of confirmed children till the time an $instance$ is found
-for some $w' \in C_{v,u}$ and $InstanceFound$ is set to $True$. Finally, if the candidates set $P_{v,c'}$ for \textbf{every} $c'\in children(p)$
-is exhausted, $v$ is appended to the enumerated set for $p (E_{p})$. This means that
-\textit{all} possible candidate child mappings have been traversed and
-confirmed. Note that child mapping $w$ if inserted into $E_{c}$
-gets tranferred from $P_{v,c}$ to $C_{v,c}$. This is because any subsequent searches for possible mappings of $c$ at $v$
-can ignore all $w' \in C_{v,c}$ since such a $w'$ has been completely
-"enumerated" and thus matching it to $c$ would result in repeated traversals
-over already explored portions of the graph. The \textit{Base Case} (lines 1-3) occurs when the algorithm finds an instance
-of the child pattern $R$ (i.e., $|instance|=|V(R)|$). The algorithm
-records the mappings of every $l'\in Leaves(Q)$ in the corresponding enumerated
-sets, since there cannot exist any further child mappings below leaves. Finally,
-the $instance$ is returned.
-
-
-\begin{algorithm}
-	\caption{\textsc{FindAllInstancesApprox}}\label{algo:approx-instances}
-	\dontprintsemicolon
-	% \begin{algorithmic}[1] \REQUIRE data graph: $G$, parent pattern: $Q$,
-	% replica of $Q$: $replica(Q)$, child pattern: $R$, parent edge: $(u, v)\in
-	% E(G)$ mapped to $(u', v')\in E(R)$, $DFS\ List$ of $Q$ rooted at
-	% $extending\
-	% index$, $instance$, $\mathbb{I}$ \ENSURE all $instances\ \mathbb{I}$ of
-	% pattern $R$ in $G$ such that $\forall I \in \mathbb{I},\ (u, v)\in I$ as a
-	% mapping of $(u',v')$\\ 
-	\KwIn{Graph $G$, parent: $Q$, $replica(Q)$, child: $R$, parent edge: $(u,
-			v)\in E(G)$ mapped to $(u', v')\in E(R)$, $DFS\ List$ of $Q$ rooted
-			at $extending\ index$, $instance$, $\mathbb{I}$} \KwOut{relevant
-			$instances\ \mathbb{I}$ of pattern $R$ in $G$ such that $\forall I
-			\in
-			\mathbb{I},\ (u, v)\in E(I)$ as a mapping of $(u',v')$}
-
-	\nonl $Base\ Case:$\;
-	\uIf {$|instance| = |V(R)|$}
-	{
-		
-		Update $E_{l'}$ for each  $l'\in Leaves(Q)$\;
-		\nonl $[[E_{l'}\leftarrow E_{l'} \cup \{instance(l')\}, \forall l' \in Leaves(Q)]]$ \;
-		\Return{$instance$}\;
-	} 
-		$Recursive\ Case:$\; 
-		$e(p,c)\coloneq$ \textsc{NextQueryEdge($DFS\ List$, ...)}\; \nonl $[[\ (p,c) \in E(Q),\ c
-		\in children(p)]]$\; $v\coloneq$ Mapping of $p$ in $instance$\; \nonl
-		$[[\ v\in V(replica(Q))\wedge (p,v)\in instance]]$\;
-	\uIf{${P_{v,c}}$ \textup{does not exist}}
-	{${P_{v,c}}\coloneq$ \textsc{FilterCandidates($instance$, $v$, $c$, $...$)}
-		\; \nonl $[[\forall w \in P_{v,c}\ ((w\in V(replica(Q))\wedge (w\in
-		adjList(v)) \wedge (c\in InverseMap(w))\wedge (L(v,w)=L(p,c)) )]]$\;
-		${C_{v,c}}\coloneq \emptyset$\;}
-	% \uIf{$v \in V(replica(Q))$ \textup{is mapped to} $v'$ \textup{for the
-	% first time}}
-	% {
-	%   $c':=$ \textsc{NextQueryVertex($DFS\ List$, $v'$)} \; ${P_{v,c'}}:=$
-	%   \textsc{FilterCandidates($instance$, $v$, $c'$, $...$)} \;
-	%   ${C_{v,c'}}:=\emptyset$\; %     \FOR{\textbf{each} adjacent edge
-	%   $e(v,w)$ of $v$ in $replica(Q)$} \IF{$e$ %     maps to the corresponding
-	%   $child\ edge$ in $DFS\ List$} \STATE $\mathbb{P} %     \leftarrow
-	%   \mathbb{P} \cup w$ \ENDIF \ENDFOR % \ENDIF
-	% }
-	$boolean$ $InstanceFound \coloneq$ {\sf False}\; \ForEach {$w \in P_{v,c}$
-		\textup{such that $w$ is not yet matched}} {$instance\leftarrow
-		instance\cup \{(c,w)\}$\; $\mathbb{I'} \leftarrow $
-		\textsc{FindAllInstancesApprox($R$, $e$, $instance$, $DFS\ List$)} \;
-		\uIf {$\mathbb{I'} \neq \emptyset$}
-		{$\mathbb{I}\leftarrow \mathbb{I}\ \cup\ \mathbb{I'}$\;
-			$InstanceFound\leftarrow$ {\sf True} \;}
-		\uIf {$w \in E_{c}$}
-		{	$P_{v,c}\leftarrow P_{v,c} \setminus \{w\}$\; $C_{v,c}\leftarrow
-				C_{v,c} \cup \{w\}$\;} $instance\leftarrow instance \setminus
-				\{(c,w)\}$\;}
-	% \While{$InstanceFound$ \textup{is} {\sf False}}
-	% {
-	\ForEach{$w' \in C_{v,c}$ \textup{such that $w'$ is not yet matched and}
-		$InstanceFound$ \textup{is} {\sf False}} {$instance\leftarrow
-		instance\cup \{(c,w')\}$\; $\mathbb{I'} \leftarrow $
-		\textsc{FindAllInstancesApprox($R$, $e$, $instance$, $DFS\ List$)} \;
-		\uIf {$\mathbb{I'} \neq \emptyset$}
-		{$\mathbb{I}\leftarrow \mathbb{I}\ \cup\ \mathbb{I'}$\;
-			$InstanceFound\leftarrow$ {\sf True} \;} $instance\leftarrow
-			instance \setminus \{(c,w')\}$\;
-		% \IF{edge $e'(v,w')$ is \textbf{not} already in $instance$} \STATE
-		% $instance\leftarrow instance\cup e'$ \STATE $\mathbb{I'}\leftarrow$
-		% {\sf find\ all\ instances($R$, $e'$, $instance$, $DFS\ List$)}
-		% \IF{$\mathbb{I'}$ is \textbf{not} empty} \STATE $\mathbb{I}\leftarrow
-		% \mathbb{I}\ \cup\ \mathbb{I'}$ \STATE $Found\leftarrow True$ \STATE
-		% \textbf{break} \ENDIF \ENDIF Recursively enumerate all instances
-		% $(lines[12:16])$ \;
-	}
-	% }
-	\uIf{$\ \forall c' \in children(p),\ P_{v,c} = \emptyset$}
-	{ $E_{p} \leftarrow E_{p} \cup v$} \Return{$\mathbb{I}}\;
-\end{algorithm}
-
-
-
-
-
-\eat{
-Algorithm
+\textsc{FindAllInstances} (Algorithm \ref{algo:complete-instances}) to find
+every instance of $R$ from \emph{replica($Q$)} that contains $e$. Algorithm
 \ref{algo:complete-instances}, thus invoked, recursively enumerates all
 instances of $R$ in a depth-first manner following the \emph{DFS List} of $Q$
 (computed earlier). In the general case (lines 4-10), the algorithm begins by
@@ -550,13 +599,13 @@ V(replica(Q))$). The algorithm then calls \textsc{FilterCandidates} (line 5) to
 compute the the potential children set $P_c$ for storing all candidate vertices
 $w\in V(replica(Q))$ for matching $c$ such that: (1) $w$ is contained in the
 \textit{replica} graph adjacency list of $v$; (2) $c$ exists in the inverse
-mappings set for $w$ in $replica(Q)$. That is, \forall $w \in P_{c}$, $c\in
+mappings set for $w$ in $replica(Q)$. That is, $\forall$ $w \in P_{c}$, $c\in
 InverseMappings(w)$; (3) The edge label of $(v,w)\in E(replica(Q))$ matches that
 of $(p,c)\in E(Q)$. Next, for every vertex $w \in P_{c}$ such that $w$ has not
 already been mapped to some other pattern vertex in the current
 \textit{instance}, the algorithm attempts the mapping $(c,w)$ in
 \textit{instance} (line 7) and recursively calls \textsc{FindAllInstances} (line
-8) to match remaining pattern vertices following the \textit{DFS List} of edges.  
+8) to match remaining pattern vertices following the \textit{DFS List} of edges.
 
 The \textit{Base Case} (lines 1-2) occurs when the algorithm finds an
 \textit{instance} of $R$ (i.e., $|instance|=|V(R)|$) and returns it. The set of
@@ -573,6 +622,7 @@ and vice-versa.
 % It enumerates all instances in a depth-first manner starting from the
 % $extending\ index$ as the $root$ by following the {\sf DFS} edge-ordering
 % stored in $DFS\ List$.
+\eat{
 \begin{algorithm}
 	\dontprintsemicolon
 	\caption{\textsc{FindAllInstances} \textsc{(Exact)}}\label{algo:complete-instances}
@@ -613,26 +663,15 @@ and vice-versa.
 \end{algorithm}
 }
 
-
-
-
-
-
-
-
 This replica-based instance storage strategy not only builds a foundation for the sequential
 efficient correlation calculation, but also benefits the MNI support counting in
 the single large graph since we can directly get $\sigma(R)$ when we record the
 \textit{replica(R)} just by counting all the sizes of the $Mappings(v)$, where $v\in
 V(Q)$.
 
-% \textcolor{red}{#to be added: !replica(R) can be deleted after operate(R)-memory benefit}
+\textcolor{red}{\#to be added: !replica(R) can be deleted after operate(R)-memory benefit}
 
-% \subsubsection{\textcolor{red}{?}Indexing to Facilitate Replica Deletion}
-% \label{subsubsec:replica-indexing}
-
-
-\begin{figure*}
+\begin{figure}
     % \captionsetup[subfigure]{oneside, margin={0.4cm,0cm}}
     % \captionsetup[subfigure]{labelfont=normalfont,textfont=normalfont,singlelinecheck=on,justification=raggedright, skip=20pt}
     %, skip=-10pt}
@@ -642,7 +681,7 @@ V(Q)$.
             \caption{}
 			\label{fig:exactq}
     \end{subfigure}%
-    % \hspace*{\fill}
+    \hspace*{\fill}
     % \captionsetup[subfigure]{labelfont=bf,textfont=normalfont,singlelinecheck=on,justification=raggedright, skip=-5pt}
 	\begin{subfigure}[b]{0.35\textwidth}
             % \centering
@@ -651,6 +690,7 @@ V(Q)$.
             \caption{}
 			\label{fig:exactrepq}
 	\end{subfigure}
+
 	\captionsetup[subfigure]{skip=-2pt}
 	\begin{subfigure}[b]{0.15\textwidth}
 		% \centering
@@ -658,7 +698,7 @@ V(Q)$.
 		\caption{}
 		\label{fig:exactr}
 	\end{subfigure}%
-	% \hspace*{\fill}
+	\hspace*{\fill}
 	\begin{subfigure}[b]{0.35\textwidth}
 		% \centering
 		\includegraphics[scale=0.6]{img_ex/Exact-rep(R).pdf}
@@ -668,10 +708,10 @@ V(Q)$.
 		\label{fig:exactrepr}
 	\end{subfigure}
 	% \captionsetup[figure]{skip=200pt}
-    \vspace{0.5\baselineskip}
+    \vspace{-1.75\baselineskip}
 	\caption{\textup{(a)} parent $Q$ \textup{(b)} $replica(Q)$ \textup{(c)} child $R$ showing edge extension $(S_0, S_3)$ \textup{(d)} $replica(R)$}\label{fig:exactex}
-	\vspace{0.75\baselineskip}
-\end{figure*}
+	\vspace{-0.75\baselineskip}
+\end{figure}
 
 \begin{exple}	
 	In Figure \ref{fig:exactex}, originally \emph{Q} and \emph{replica(Q)} are
@@ -686,9 +726,11 @@ V(Q)$.
 	would result in \emph{replica(R)} as shown in Fig.\ref{fig:exactrepr}
 \end{exple}
 
-\section{Subgraph Extension}
+%(commented out)Subgraph Extension subsection****************************************************************************************************
+\eat{
+\subsection{Subgraph Extension}
 \label{subsec:subgraph-ext}
-\subsection{Extension Rule}
+\subsubsection{Extension Rule}
 We assign pattern vertex indices for all $V_i\in V(Q)$ to identify their order of discovery.
 \begin{defn}[Vertices Subscripting] For all $Q\in T$, apart from vertex
 	identification $V_i$, we use another convention to label the vertices in $Q$
@@ -719,7 +761,7 @@ single-edged extensions to generate $children(Q)$ which continue the search. Alg
 			$Ex(Q)\leftarrow Ex(Q)\cup E$
 		}
 	}
-	\Return{$Ex(Q)$} 
+	\Return{$Ex(Q)$}
 	% \STATE $Ex(Q)\leftarrow\emptyset$
 		% \STATE $Rmpath\leftarrow$ right-most path of $Q$
 		% \FORALL{$s$ in $Rmpath$}
@@ -738,9 +780,9 @@ single-edged extensions to generate $children(Q)$ which continue the search. Alg
 \textsc{SubgraphEdgeExtensions} iterates over every mapping $v'\in
 V(replica(Q))$ for every $v\in rmpath($Q$)$ and attempts to extend $Q$ using a
 single-edge extension. The set of all valid candidate edge extensions, $Ex(Q)$ thus
-obtained is returned. 
+obtained is returned.
 
-\subsection{Duplicated Subgraph Prunning}
+\subsubsection{Duplicated Subgraph Prunning}
 To avoid the duplicated subgraph judgement, we take the advantage of the DFS
 code, and the minimum DFS code in gSpan\cite{YH02}, whenever a subgraph is
 constructed we compute its minimum DFS code, denoted as $DFS\ Code(Q)$.
@@ -750,12 +792,14 @@ discover. When a subgraph $Q$ is discovered, we perform a lookup for $DFS\ Code(
 dictionary. If $DFS$ $Code(Q)$ $\in$ $\mathbb{D}$, then $Q$ must have been discovered before,
 so we prune $Q$.
 
-% \textcolor{red}{completeness theorem pending}
+\textcolor{red}{completeness theorem pending}
+}
 
-\section{Correlation Computation}
+%Correlation Computation subsection****************************************************************************************************
+\subsection{Correlation Computation}
 \label{subsec:corrcomp}
 
-\subsection{Global Index}
+\subsubsection{Global Index}
 \label{subsec:global-index}
 
 We use a global index to record all the distance information. Each vertex of the data graph stores two catogories of distance information.
@@ -768,7 +812,7 @@ We use a global index to record all the distance information. Each vertex of the
 \squishend
 With the global index acquired before the search, there is no need to consider anything about the distance (hop-constraints) in the search steps. The detail of the maintenance of these two indices is specified in Section \ref{subsec:calculating}.
 
-\subsection{Calculating Correlation}\label{subsec:calculating}
+\subsubsection{Calculating Correlation}\label{subsec:calculating}
 \begin{defn}[Positive Instance Group]
 	Given two subgraphs $Q_1$ and $Q_2$ in the input graph $G$, their instance-groups
 	$\mathbb{I'}=\{I'_1,I'_2,\ldots,I'_{\sigma(Q_1)}\}$ and $\mathbb{J'}=\{J'_1,J'_2,\ldots,J'_{\sigma(Q_2)}\}$,
@@ -786,7 +830,7 @@ With the global index acquired before the search, there is no need to consider a
 \end{thrm}
 The process of correlation calculation could be considered as a {\bf collection}. Suppose we are calculating the correlation of $Q_1$, i.e. $\tau(Q_1,Q_k,h)$, for all $Q_k\in Cor(T)$. Taking advantage of the global index in Section \ref{subsec:global-index}, by traversing all the vertices in a group can we know the correlation $\tau()$ of all the $v$. We collect these sets one-by-one and finally we could know all the correlation of $Q_1$, i.e. $\tau(Q_1,Q_k,h)$, for all $Q_k\in Cor(T)$.
 
-\subsection{Replica Structure Transformation}
+\subsubsection{Replica Structure Transformation}
 It is more convenient to implement an efficient collection in a hierarchical structure, like tree. As a result, to initialize a collection, we first transform the search space of the collection to a particular tree.
 \par Prior to the detailed operations, we first define the group center and the collection tree of a pattern.
 \begin{defn}[Group Center and Center Subscript]
@@ -844,10 +888,10 @@ It is more convenient to implement an efficient collection in a hierarchical str
 	% 	\includegraphics[scale=0.30]{images/tree_structure5}
 	% 	\label{fig:tree_structure5}
 	% }
-	\vspace{-2mm}
-	\caption{\scriptsize Figure \ref{fig:tree_structure3} is the subgraph pattern of $Q_1$, Figure \ref{fig:tree_structure5} is a replica of the occurrence of $Q_1$ in Figure \ref{fig:tree_structure3} without any backward edges. Figure \ref{fig:tree_structure4} is the same subgraph pattern $Q_2$ with Figure \ref{fig:tree_structure3}, with collection tree rooted at the group center $s_2$. Figure \ref{fig:tree_structure5} is the occurrence of $Q_2$ in data graph $G$.}
+	\vspace{-8mm}
+	\caption{\scriptsize Figure \ref{fig:tree_structure0} is the subgraph pattern of $Q_1$, Figure \ref{fig:tree_structure2} is a replica of the occurrence of $Q_1$ in Figure \ref{fig:tree_structure1} without any backward edges (the dotted lines are the backward edges in $Q_1$). Figure \ref{fig:tree_structure4} is the same subgraph pattern $Q_2$ with Figure \ref{fig:tree_structure3}, with collection tree rooted at the group center $s_2$. Figure \ref{fig:tree_structure5} is the occurrence of $Q_2$ in data graph $G$.}
 	\label{fig:replica}
-	% \vspace{-5mm}
+	\vspace{-5mm}
 \end{figure}
 % }
 % ~\newline
@@ -898,7 +942,7 @@ Algorithm 4 summarises the steps described above.
 			\ForEach{$u\in V(replica(Q))$ \textup{constituing an $instance$ in} $\mathbb{I}$}
 			{
 				$\forall v \in CorV(u)$, $CorP(v)\leftarrow CorP(v) \cup \{Q\}$\;
-				$Collect(m, Q) \leftarrow Collect(m, Q) \cup CorP(u)$\;	 
+				$Collect(m, Q) \leftarrow Collect(m, Q) \cup CorP(u)$\;	
 			}						
 		}
 		\ForEach{\textup{pattern $Q_k$ in set {\sf operated}}}
@@ -908,15 +952,42 @@ Algorithm 4 summarises the steps described above.
 		}
 		Update {\sf Top\ $k$} order with computed correlation ($\tau$) values\;
 		{\sf operated} $\leftarrow$ {\sf operated} $\cup \ \{Q\}$\;
+
+		% \REQUIRE data graph: $G$, hop value: $h$, initial distance index set: $Index$
+		% \ENSURE
+		% \STATE $DFS\ List\leftarrow$ get rooted {\sf DFS} of $Q$ with $center$ as $root$
+		% \FORALL{mappings $m$ of $center$ in $replica(Q)$}
+		% % \STATE $\mathbb{I}\leftarrow$ {set of all instances of $Q$ in $replica(Q)$ containing $m$ mapped to $center$}
+		% \FORALL{vertex $u$ constituting an instance in $\mathbb{I}$}
+		% \STATE $\forall v\in CorV(u)$, $CorP(v)\leftarrow CorP(v)\cup Q$
+		% \STATE $Collect(m, Q)\leftarrow Collect(m, Q)\cup CorP(u)$
+		% \ENDFOR
+		% \ENDFOR
+		% \FORALL{patterns $Q_k$ in set {\sf operated}}
+		% \STATE $\tau(Q, Q_k, h)\leftarrow$ number of instance group centers $m$ s.t. $Q_k\in Collect(m, Q)$
+		% \ENDFOR
+		% \STATE Update {\sf Top\ $k$} list with the computed correlation ($\tau$) values
+		% \STATE {\sf operated} $\leftarrow$ {\sf operated} $\cup \ Q$
+		% \RETURN
+	% \end{algorithmic}
 \end{algorithm}
-%append the "complete" collect-stat algorithm here 
+%append the "complete" collect-stat algorithm here
 
 % \begin{exple}
 % 	In Figure \ref{fig:tree_structure5}, $v_0$ initiates a collection and it first goes to the deeper level until it reach the leaf, $v_9$, then it goes up from $v_9$ to $v_0$. Suppose $CorP(v_9)=\{Q_1\}$ and $CorP(v_3)=\{Q_2\}$, then $Collect(v_3,Q)=\{Q_1,Q_2\}$. This operation continues until $Collect(v_0,Q)$ is calculated. Moreover, since $Collect(v_4,Q)$ is calculated during the collection of $v_0$, it need not to be calculated again during the other collections. For example, in this case, $v_2$ initiates a collection and goes to $v_4$ and it can directly get the result of $Collect(v_4,Q)$ without going deeper.
 % \end{exple}
+\subsubsection{\textcolor{red}{?}Indexing to Facilitate Replica Deletion}
+\label{subsubsec:replica-indexing}
+\emph{CorP} index gets updated during the \emph{collection phase} of correlation
+computation. The advantage of maintaining such an index is it allows us to
+remove the \emph{replica} of a pattern $Q$ from memory once $Q$ has been
+\emph{operated} since the information about the spatial proximity to $Q$ is captured by
+all neighboring vertices of \emph{replica($Q$)} (within specified \emph{hop}).
+Thus, the index facilitates a space efficient solution to maintaining
+"proximity" records. 
 
 
-\subsection{Avoiding Subgraph/Supergraph Correlation}\label{subsec:avoiding}
+\subsubsection{Avoiding Subgraph/Supergraph Correlation}\label{subsec:avoiding}
 As we mentioned in Section \ref{sec:problem}, we do not want to consider the correlation of $Q_1,Q_2$ if $Q_1$ is a subgraph or a supergraph of $Q_2$. If $Q_2$ is extended from $Q_1$, we could easily know $Q_2$ is the supergraph of $Q_1$ and skip their correlation calculation. However, there are more troublesome conditions.
 
 
@@ -948,12 +1019,14 @@ $Q_2$. As a result, if $Q_1$ can extend to $Q_2$, then we operate
 $SubRec(Q_2)=SubRec(Q_2)\cap Q_1\cap SubRec(Q_1)$. As {\sf Op($Q$)} is
 occurring, if $Q_i\in SubRec(Q)$, we skip $\tau(Q,Q_i,h)$.
 
-\section{Mining Algorithm}
+%(commented out)Mining Algorithm*******************************************************************************************************
+\eat{
+\subsection{Mining Algorithm}
 \label{subsec:miningalgo}
 The complete mining algorithm consists of an initialization step and the search
 algorithm to compute top-\textit{k} pairs of correlated subgraph patterns. The
 details of these procedures are described in the following subsections.
-\subsection{Initialization}
+\subsubsection{Initialization}
 \label{subsec:initialization}
 Algorithm \ref{algo:initialization} specifies the step-by-step operations of the
 initialization procedure.
@@ -964,16 +1037,14 @@ initialization procedure.
 	\nonl \textbf{Input:} Graph $G$, {\sf Min-Sup:} $min\_sup$, hop value: $h$\;
 	\nonl \textbf{Output:} frequent edges set: $F\_edges$, proximate vertices
 	index: $CorV$, modified data graph: $G$ \;
-		% $F\_edges\leftarrow$ frequent edges from $E(G)$\;
 		$F\_edges\leftarrow \{e\ |\ e \in E(G),\ \sigma(e) \geq min\_sup \}$\;
-		\ForEach{\textup{$u \in V(G)$ such that $(u, u')$\ \in\ F\_edges\ \ }}
+		\ForEach{\textup{$u \in V(G)$ such that $(u, u')\ \in\ F\_edges$\ \ }}
 		{\textsc{BFS} from $u$ to all $v\in V(G)$, such that min distance
 		$d(u,v)\le h$\; $CorV(u) \leftarrow$ set of all $v$ obtained above\;}
 		$NF\_edge\leftarrow E(G)\setminus F\_edge$ \; Remove $NF\_edge$ from
 		$E(G)$\; \Return {$F\_edges,\ CorV,\ G$}\;
 	% \end{algorithmic}
 \end{algorithm}
-
 The algorithm begins with a brute-force search to obtain all frequent edges in
 the data graph (line 2). Once the set of frequent edges (stored in variable
 $F\_edges$) is computed, the algorithm executes a breadth-first search (BFS)
@@ -996,7 +1067,8 @@ hereafter and doing so accelerates the search procedure.
 % Section \ref{subsec:search-steps}. Finally, we remove the infrequent edges
 % from the data graph (line ) because they are useless after initialization and
 % removing them could accelerate the search.
-\subsection{Search Steps}
+
+\subsubsection{Search Steps}
 \label{subsec:search-steps}
 Following the initialization, the search algorithm as specified in
 Algorithm~\ref{algo:searchsteps} is executed.
@@ -1006,16 +1078,16 @@ Algorithm~\ref{algo:searchsteps} is executed.
 	\nonl \textbf{Input:} Graph $G$, {\sf Min-Sup:} $min\_sup$, frequent edges
 	set: $F\_edges$, $CorV$, Generated patterns dictionary: $\mathbb{D}$ \;
 	\nonl \textbf{Output:} $top\_k$ pairs of correlated subgraph patterns  \;
-	Initialize {\sf Search Queue} with $F\_edges$ \; 
-	\While{\textup{\textsc{CeasingCondition} is not satisfied}} 
+	Initialize {\sf Search Queue} with $F\_edges$ \;
+	\While{\textup{\textsc{CeasingCondition} is not satisfied}}
 	{
 		subgraph $Q \leftarrow$ {\sf Search\
-		Queue.Pop()}\; 
-		Execute \textsc{Operate($Q$)}\; 
-		$Ex(Q) \leftarrow $ \textsc{SubgraphEdgeExtensions($Q$)}\; 
-		\ForEach{\textup{candidate edge} $e(u,v)\in Ex(Q)$} 
+		Queue.Pop()}\;
+		Execute \textsc{Operate($Q$)}\;
+		$Ex(Q) \leftarrow $ \textsc{SubgraphEdgeExtensions($Q$)}\;
+		\ForEach{\textup{candidate edge} $e(u,v)\in Ex(Q)$}
 		{
-			child $Q'\leftarrow Q$ extended with $e$\; 
+			child $Q'\leftarrow Q$ extended with $e$\;
 			\uIf{$DFS\ Code(Q') \notin \mathbb{D}$}
 			{
 				$replica(Q') \leftarrow $ \textsc{GetReplica($Q', u, e, \dots$)}\;
@@ -1040,27 +1112,27 @@ The algorithm begins with the initialization of a priority queue called
 \textit{Search Queue} (line 1) that stores subgraph patterns scheduled for
 correlation computation with the property that a pattern with a higher
 MNI-support is accorded a higher priority following the best-first search
-strategy (Section~\ref{subsubsec:exact_algo_bestfs}). \textit{Search Queue} is
+strategy (Section~\ref{subsubsec:estimating}). \textit{Search Queue} is
 initialized with the set of frequent edges (queued in the order of decreasing
 support values). During search, as long as the \textit{ceasing condition}
-(Section~\ref{subsubsec:exact_algo_ceasing}) remains unsatisfied, the subgraph pattern at
+(Section~\ref{subsubsec:ceasing}) remains unsatisfied, the subgraph pattern at
 the front of \textit{Search Queue} is selected for correlation computation and
 extension. Correlation computation takes place in method \textsc{Operate}
-(Algorithm~\ref{algo:operate}) wherein the top-\textit{k} set can also be
+(Algorithm~\ref{algo:operate}) wherein the top-$k$ set can also be
 updated. This is followed by the computation of all possible one edge extensions
 in $Q$ in method \textsc{SubgraphEdgeExtensions} (line 5). For every candidate
 extension in $Ex(Q)$, the DFS Code of the resulting child subgraph pattern $Q'$
 is tested for presence in dictionary $\mathbb{D}$. A match in $\mathbb{D}$
 indicates that $Q'$ has already been generated previously, so the algorithm
 proceeds with the MNI-support computation only if there is no match (line 8).
-MNI-support computation for $Q'$ requires the construction of its $replica$
+MNI-support computation for $Q'$ requires the construction of its \textit{replica}
 structure, which the algorithm computes and stores through the invocation of
-\textsc{GetReplica} method described (line 9). Note that the $replica$ structure
+\textsc{GetReplica} method described (line 9). Note that the \textit{replica} structure
 for a child pattern not only establishes the MNI-support but also allows
 correlation computation in method \textsc{Operate}. If the child pattern's
-MNI-support value exceeds the threshold {\sf min\_sup}, it is pushed into
+MNI-support value exceeds the threshold \textit{min\_sup}, it is pushed into
 \textit{Search Queue} (line 12) to be (possibly) processed in a later iteration of
-the outer loop. \textit{DFS Code($Q'$)} is recorded in $\mathbb{D}$ (line 13).
+the outer loop. \textit{DFS\_Code(Q')} is recorded in $\mathbb{D}$ (line 14).
 % During the search step, if the ceasing condition in Section
 % \ref{subsubsec:ceasing} is not satisfied, we select a subgraph $Q$ in
 % $Leaf(T)$ according to the criteria in Section \ref{subsubsec:estimating}
@@ -1084,65 +1156,5 @@ the outer loop. \textit{DFS Code($Q'$)} is recorded in $\mathbb{D}$ (line 13).
 % Min-sup} to get the result of a particular $k$ of {\sf Top-$k$} correlated
 % subgraphs. That is to say, the {\sf Min-Sup} problem can be transfered from
 % {\sf Top-$k$} problem. As a result, we concentrate on {\sf Top-$k$} problem in
-% the following sections. 
-
-% \begin{figure}[t!]
-% 	\vspace{2mm}
-% 	\centering
-% 	\subfigure[{\scriptsize Hello World }]
-% 	{
-% 		\includegraphics[scale=0.06]{img_ex/temp1.pdf}
-% 		\label{subfig:exp_temp1}
-% 	}
-% 	\vspace{-2mm}
-% 	\caption{\scriptsize Get Replica}
-% 	\label{fig:exp_temp1}
-% 	\vspace{-2mm}
-% \end{figure}
-
-\eat{
-\begin{figure}[t!]
-	\centering
-	% \addtolength{\subfigbottomskip}{-5pt}
-	\subfigure[{\scriptsize Subfig1}]	
-	{
-		\includegraphics[scale=0.6]{img_ex/Exact-Q.pdf}
-		\label {subfig:exact_Q}
-	}
-	% \newcommand{\subfigbottomskip}{100pt}
-	\subfigure[{\scriptsize Subfig2}]
-	{
-		\includegraphics[scale=0.6]{img_ex/Exact-rep(Q).pdf}
-		\label {subfig:exact_repQ}
-	}
-	\vspace{-2mm}
-	\caption{\scriptsize GetReplica}
-	\label{fig:avoiding}
-	\vspace{-6mm}
-\end{figure}
+% the following sections.
 }
-
-% \begin{figure}
-% 	\begin{subfigure}[b]{0.10\textwidth}
-% 			\includegraphics[scale=0.2]{example-image-a}
-% 			\caption{A gull}
-% 			\label{fig:gull}
-% 	\end{subfigure}%
-% 	\begin{subfigure}[b]{0.10\textwidth}
-% 			\includegraphics[scale=0.2]{example-image-a}
-% 			\caption{A gull2}
-% 			\label{fig:gull2}
-% 	\end{subfigure}%
-% 	\begin{subfigure}[b]{0.10\textwidth}
-% 			\includegraphics[scale=0.2]{example-image-a}
-% 			\caption{A tiger}
-% 			\label{fig:tiger}
-% 	\end{subfigure}%
-% 	\begin{subfigure}[b]{0.10\textwidth}
-% 			\includegraphics[scale=0.2]{example-image-a}
-% 			\caption{A mouse}
-% 			\label{fig:mouse}
-% 	\end{subfigure}
-% 	\caption{Pictures of animals}\label{fig:animals}
-% \end{figure}
-
