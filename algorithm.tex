@@ -1,23 +1,15 @@
 
-% \section{Analysis}
-% \label{sec:analysis}
+\section{Analysis}
+\label{sec:analysis}
 
-% \subsection{Complexity Analysis}
-% We denoted the number $Op(Q)$ occurs for all the subgraphs $Q$ as $f$ and the average degree of the vertices is $d$, the number of the vertices in the data graph is $|V|$.
+\subsection{Complexity Analysis}
+We denoted the number $Op(Q)$ occurs for all the subgraphs $Q$ as $f$ and the average degree of the vertices is $d$, the number of the vertices in the data graph is $|V|$.
 
-% \spara{$\bullet$ Time Complexity.} For $f$ subgraphs, suppose $Q$ is the subgraph selected, i.e. {\sf Op($Q$)} is occurring. Suppose there are $n$ group centers, the time cost of each collection process is bounded by $|V|d$, and the cost of proximity pattern set union is $f$. And the event of {\sf Found($Q$)} cost most $|V_Q||V|d$, which is dominated by the collection cost. Thus, the total time complexity is bounded by $O(|V|ndf^2)$.
-
-
-% \spara{$\bullet$ Space Complexity.}
-% As mentioned in Section \ref{subsec:unit}, we remove the replica of $Q$ if {\sf Op($Q$)} occurs so that there would be no space cost of $Q$ anymore. Thus, the only storage which domainates the space cost is the storage of global index. For at most $|V|$ vertices in the data graph, each of them needs to store a proximity vertex set, bounded by $d^h$, , commonly $h\le 2$ (The correlation is not interesting if $h$ is not very small). Besides, the proximity pattern set of each vertex is bounded by $f$. Thus, the total space complexity is bounded by $O(|V|(d^h+f))$.
+\spara{$\bullet$ Time Complexity.} For $f$ subgraphs, suppose $Q$ is the subgraph selected, i.e. {\sf Op($Q$)} is occurring. Suppose there are $n$ group centers, the time cost of each collection process is bounded by $|V|d$, and the cost of proximity pattern set union is $f$. And the event of {\sf Found($Q$)} cost most $|V_Q||V|d$, which is dominated by the collection cost. Thus, the total time complexity is bounded by $O(|V|ndf^2)$.
 
 
-
-
-
-
-
-
+\spara{$\bullet$ Space Complexity.}
+As mentioned in Section \ref{subsec:unit}, we remove the replica of $Q$ if {\sf Op($Q$)} occurs so that there would be no space cost of $Q$ anymore. Thus, the only storage which domainates the space cost is the storage of global index. For at most $|V|$ vertices in the data graph, each of them needs to store a proximity vertex set, bounded by $d^h$, , commonly $h\le 2$ (The correlation is not interesting if $h$ is not very small). Besides, the proximity pattern set of each vertex is bounded by $f$. Thus, the total space complexity is bounded by $O(|V|(d^h+f))$.
 
 % \subsection{Search Strategy Analysis}
 % \spara{$\bullet$ vs. Depth-first-search.} Suppose {\sf Min-sup} is small and $k$ in {\sf Top-$k$} is also small, then we just need to find a few correlations with high $\tau$ value to get the result. However, if DFS goes to a subgraph $Q$ with lower support $\sigma(Q)$, then events {\sf Found($Q$)} and {\sf Op($Q$)} would still occurs. Until $\sigma(Q)$ is smaller than the small value {\sf Min-sup} can we go to another branch. Obviously, we have already calculated a large amount of insignificant correlations.

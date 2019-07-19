@@ -1,19 +1,7 @@
-\chapter{Conclusions}
+\vspace{-0.10in}
+\section{Conclusions}
 \label{sec:conclusions}
-In this thesis, we presented a novel approach to compute \textit{correlations}
-between two subgraphs in a single large graph, where we defined
-\textit{correlations} on the basis of a distance metric. We introduced a novel
-method to group instances and defined the \textit{correlation value} $(\tau)$ as
-the count of such \textit{instance groups} for a pattern in proximity to those
-of another pattern. For computing all instances, we proposed a
-\textsc{TreeSearch} backtracking algorithm. The algorithm constructs what we
-call the \textit{Replica} structure - an occurrence graph of a pattern in a data
-graph. However in a dense or large graph, computing the \textit{replica} is
-computationally intensive since subgraph isomorphism is an \textit{NP-hard}
-problem and the number of instances of a pattern generally increases
-exponentially with increasing graph density. To solve this problem, we proposed
-an \textbf{Approximation} scheme that constructs the \textit{Replica} approximately. We
-observed good performance of the Approximation algorithm on large datasets, as
-reported by the \textit{Kendall-Tau's coefficient}, \textit{Jaccard coefficient}
-and \textit{Percentage error in $\tau$ values} - which were close to perfect
-values for almost all datasets we tested on. 
+
+A large body of work exists on mining recurring structural patterns among a group of nodes in the form of frequent subgraphs. However, \textit{can we mine recurring patterns among the frequent subgraphs itself?}  In this paper, we answer this question by mining correlated pairs of frequent subgraphs. Unlike frequent subgraphs mining, we not only need to identify if a subgraph is frequent, but also enumerate, maintain, and compute distances among \emph{all} instances of all frequent subgraphs. Managing instances imposes a severe scalability challenge on both computation and storage. We tackle this challenge by designing a data structure called \emph{Replica}, which stores all instances in a compact manner. Furthermore, Replica allows us to design a near-optimal approximation scheme to enumerate and identify instances in a highly efficient manner. Through extensive evaluation across a series of real datasets, we demonstrate that the proposed mining algorithm \emph{CSM} scales to million-sized networks, imparts up to $5$ orders of magnitude speed-up over baseline techniques, and discovers patterns that existing techniques fail to reveal. Overall, our work initiates a new line of research by mining higher-level patterns from the pattern space itself.
+
+For future work, we propose to mine arbitrary-sized groups of correlated subgraphs instead of being restricted to pairs.

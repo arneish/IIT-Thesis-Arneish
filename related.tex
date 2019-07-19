@@ -1,13 +1,68 @@
-% \section{Related Work}
-% \label{sec:related}
+\vspace{-0.10in}
+\section{Related Work}
+\label{sec:related}
+%
+We categorize related work as follows.
 
-% \spara{$\bullet$ Frequent Itemset Mining.}
+\spara{$\bullet$ Frequent subgraphs mining.}
+To mine a set of graphs, efficient frequent subgraph mining algorithms were proposed,
+e.g., AGM \cite{IWM00}, FSG \cite{KK01}, gSpan \cite{YH02}, PathJoin \cite{VGS02}, MoFa \cite{BB02},
+FFSM \cite{HWP03}, GASTON \cite{NK04}, SPIN \cite{HWPY04}, etc. Techniques were also developed
+to mine maximal \cite{HWPY04,MMF10}, closed \cite{YH03}, discriminative \cite{YCHY08,RHS13},
+statistically significant \cite{HasanZ09,JinYW10}, and representative subgraph patterns \cite{HasanCSBZ07,ZYL09}.
+These methods adopt subgraph isomorphism as a way to count the support of graph patterns in multiple graphs. 
+For a survey, we refer to \cite{KhanR17,CYH10}.
+
+In the area of mining single massive graphs, \cite{KK04,ChenHLN06,FB07,BN08} developed techniques to calculate the support of graph patterns. 
+The state-of-the-art technique for mining frequent subgraphs
+in a single-large graph is GRAMI \cite{EASK14}. GRAMI uses MNI \cite{BN08} as subgraph frequency, and models the problem of
+subgraph frequency evaluation as a constraint satisfaction problem. Algorithms for statistically significant graph patterns \cite{AroraSB14}
+and discriminative graph patterns \cite{DangSBYH14,DangYBS15} over a single graph were also designed.
+
+As noted earlier, correlated subgraphs are different from frequent subgraphs due to the
+flexibility in which the constituent subgraph instances are connected. Moreover,
+correlation computation between two subgraph patterns require enumerating
+and finding distances between every pair of subgraph instances of
+both these patterns, thereby making our problem more
+memory intensive and computationally demanding.
+
+\vspace{-0.05in}
+\spara{$\bullet$ Approximate subgraphs mining.}
+To tolerate certain structural and label differences in two graphs,
+approximate pattern mining frameworks were developed in \cite{MendozaAM12,ChenYZH07,AnchuriZBGS13},
+which can find patterns that are missed by exact mining algorithms. 
+%Approximation for fast support computation was investigated in \cite{IyerL0VBS18}. 
+Proximity patterns \cite{KYW10} were introduced to mine the top-$k$ set of node labels that co-occur frequently
+in neighborhoods. Correlations between node labels and dense graph structures were identified in
+\cite{GWZSY11,SMZ12}. In the {\sf{CSM}} problem, while we allow certain flexibility in terms of how the
+constituent subgraph instances are connected, we still maintain fixed structures for subgraph instances.
+Hence, {\sf{CSM}} is different from existing works on approximate subgraph mining.
 
 
-% \spara{$\bullet$ Frequent Subgraph Mining.}
+\vspace{-0.05in}
+\spara{$\bullet$ Correlation mining in graph databases.}
+All prior works on correlated graph mining \cite{KCN08,KCY09,KeCY09,LatsiouP11,ZouCL09,KeCN07} considered
+graph databases consisting of multiple graphs. In particular, \cite{ZouCL09,KCN08,KeCY09,KeCN07}
+developed efficient algorithms for searching both the top-$k$ and threshold-based ``correlative'' subgraphs in the
+database, which share {\em similar occurrence distributions with a given query graph}.
+The incremental and streaming versions of the top-$k$ correlative subgraph search problem
+were studied in \cite{LatsiouP11} and \cite{PanZ12}, respectively. Moreover, Ke et al. \cite{KCY09}
+designed mining algorithms for automatically finding the top-$k$ frequent correlated subgraph pairs,
+where two subgraphs are correlated if they share similar occurrence distributions
+in the graph database. Our problem is significantly different and more complex than these
+existing works: {\bf (1)} We consider mining over a single, large graph, while these works
+consider searching and mining in a graph database having several small and medium-scale graphs.
+{\bf (2)} Their ``correlation'' measures simple co-occurrence, i.e., if two
+constituent subgraphs occur in the same set of graphs from the graph database.
+In our ``correlation'' computation, we need to enumerate every pair of instances of
+both these subgraphs in a single, large graph, and then verify their pairwise distances.
+Hence, our {\sf{CSM}} problem is computationally more challenging.
 
-
-% \spara{$\bullet$ Frequent Subgraph Mining in Single Graph.}
-
-
-% \spara{$\bullet$ Subgraph Isomorphism/Subgraph Querying.}
+\vspace{-0.05in}
+\spara{$\bullet$ Correlation mining in other domains.}
+Correlation mining has drawn extensive attention in diverse applications
+due to its advantages in uncovering underlying dependencies, for example,
+in market transactions \cite{XSTK04,ZX08,LeeKCH03}, sequence databases \cite{LinJDH12},
+sequences of sets \cite{Benson0T18}, quantitative databases \cite{KeCN08}, time series data \cite{MueenNL10,HoPVHB19},
+and even in spatial domain \cite{ChanLYW19}. To the best of our knowledge,
+our work is the first application of correlation mining in a single, large graph.

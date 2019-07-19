@@ -6,7 +6,7 @@
 %\usepackage[T1]{fontenc}
 \renewcommand{\rmdefault}{ptm}
 %\usepackage{mtpro2}
-\usepackage{varwidth,times}
+%\usepackage{varwidth,times}
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{amssymb}
@@ -18,6 +18,8 @@
 \usepackage[bottom]{footmisc}
 \usepackage{balance}
 \usepackage{mathtools}
+% \usepackage{polyglossia}
+\usepackage{trimclip,comment}
 
 % \usepackage{algorithm}% http://ctan.org/pkg/algorithms
 % \usepackage{algpseudocode}%http://ctan.org/pkg/algorithmicx
@@ -27,14 +29,34 @@
 % \renewcommand{\algorithmicensure}{\textbf{Output:}}
 % \usepackage{calc} % for \widthof
 % \algrenewcommand\algorithmicensure{%
-%   \makebox[\widthof{\textbf{Require:}}][l]{\textbf{Ensure:}}} 
+%   \makebox[\widthof{\textbf{Require:}}][l]{\textbf{Ensure:}}}
 
 % \usepackage[noend]{algorithmic}
 % \usepackage{algorithm2e}
 \usepackage{amsmath}
 \usepackage{mathtools}
-\usepackage[ruled, vlined, linesnumbered]{algorithm2e}
-% \SetVlineSkip{0pt}      
+\usepackage[vlined, ruled, linesnumbered]{algorithm2e}
+
+\usepackage{algorithm2e}
+% \SetAlFnt{\small}
+\SetAlFnt{\tiny}
+\SetAlCapFnt{\small}
+% \SetAlCapNameFnt{\small}
+% \algsetup{linenosize=\tiny}
+\usepackage{tikz}
+
+\newcommand{\Arrow}[1]{%
+\parbox{#1}{\tikz{\draw[<-](0,0)--(#1,0);}}
+}
+\usepackage{amssymb}
+\newcommand{\mysetminusD}{\hbox{\tikz{\draw[line width=0.6pt,line cap=round] (3pt,0) -- (0,6pt);}}}
+\newcommand{\mysetminusT}{\mysetminusD}
+\newcommand{\mysetminusS}{\hbox{\tikz{\draw[line width=0.45pt,line cap=round] (2pt,0) -- (0,4pt);}}}
+\newcommand{\mysetminusSS}{\hbox{\tikz{\draw[line width=0.4pt,line cap=round] (1.5pt,0) -- (0,3pt);}}}
+\newcommand{\mysetminus}{\mathbin{\mathchoice{\mysetminusD}{\mysetminusT}{\mysetminusS}{\mysetminusSS}}}
+
+\newcommand{\shortleftarrow}{\clipbox*{0pt 0pt {.45\width} {\height}} $\leftarrow$}
+% \SetVlineSkip{0pt}
 \let\oldnl\nl% Store \nl in \oldnl
 \newcommand{\nonl}{\renewcommand{\nl}{\let\nl\oldnl}}
 % Remove line number for one line
@@ -46,11 +68,10 @@
 %\usepackage{multirow}
 %\usepackage{times}
 %\usepackage{cite}
-\usepackage{tikz}
 % \usepackage[singlelinecheck=off]{caption}
 \usepackage{caption}
 \usepackage{subcaption}
-\captionsetup{justification=raggedright,textfont=normalfont,singlelinecheck=false}
+\captionsetup{justification=justified,textfont=normalfont,singlelinecheck=false}
 \captionsetup[subfigure]{labelfont=normalfont,textfont=normalfont,singlelinecheck=on,justification=raggedright, skip=15pt}
 % \captionsetup[subfigure]{skip=15pt} % global setting for subfigure
 
@@ -143,7 +164,7 @@
 \newcommand{\UPDATE}{\mbox{{\bf update}}\ }
 \newcommand{\SET}{\mbox{{\bf set}}\ }
 \newcommand{\IN}{\mbox{{\bf in}}\ }
-\newcommand{\If}{\mbox{\bf if}\ }
+%\newcommand{\If}{\mbox{\bf if}\ }
 \newcommand{\Let}{\mbox{\bf let}\ }
 \newcommand{\Call}{\mbox{\bf call}\ }
 \newcommand{\Then}{\mbox{\bf then}\ }
@@ -151,26 +172,26 @@
 \newcommand{\EndWhile}{\mbox{\bf endwhile}\ }
 \newcommand{\EndFor}{\mbox{\bf endfor}\ }
 \newcommand{\EndIf}{\mbox{\bf endif}\ }
-\newcommand{\Else}{\mbox{\bf else}\ }
-\newcommand{\ElseIf}{\mbox{\bf elseif}\ }
-\newcommand{\While}{\mbox{\bf while}\ }
-\newcommand{\Begin}{\mbox{\bf begin}\ }
+%\newcommand{\Else}{\mbox{\bf else}\ }
+%\newcommand{\ElseIf}{\mbox{\bf elseif}\ }
+%\newcommand{\While}{\mbox{\bf while}\ }
+%\newcommand{\Begin}{\mbox{\bf begin}\ }
 \newcommand{\End}{\mbox{\bf end}\ }
 \newcommand{\Do}{\mbox{\bf do}\ }
 \newcommand{\Downto}{\mbox{\bf downto}\ }
-\newcommand{\Repeat}{\mbox{\bf repeat}\ }
+%\newcommand{\Repeat}{\mbox{\bf repeat}\ }
 \newcommand{\Until}{\mbox{\bf until}\ }
-\newcommand{\For}{\mbox{\bf for}\ }
+%\newcommand{\For}{\mbox{\bf for}\ }
 \newcommand{\Each}{\mbox{\bf each}\ }
-\newcommand{\ForEach}{\mbox{\bf for each}\ }
+%\newcommand{\ForEach}{\mbox{\bf for each}\ }
 \newcommand{\goto}{\mbox{\bf go to}\ }
 \newcommand{\Or}{\mbox{\bf or}\ }
 \renewcommand{\And}{\mbox{\bf and}\ }
 \newcommand{\Not}{\mbox{\bf not}\ }
 \newcommand{\Break}{\mbox{\bf break}\ }
 \newcommand{\Continue}{\mbox{\bf continue}\ }
-\newcommand{\Return}{\mbox{\bf return}\ }
-\newcommand{\Case}{\mbox{\bf case}\ }
+%\newcommand{\Return}{\mbox{\bf return}\ }
+%\newcommand{\Case}{\mbox{\bf case}\ }
 \newcommand{\Of}{\mbox{\bf of}\ }
 \newcommand{\push}{\mbox{\bf push}\ }
 \newcommand{\pop}{\mbox{\bf pop}\ }
@@ -221,4 +242,4 @@
 \newcommand{\Lg}{\textsf{Large}}
 \newcommand{\Threshold}{\textsf{Threshold}}
 \newcommand{\Stretch}{\textsf{Stretch}}
-\newcommand{\LBS}{\textsf{LBS}} 
+\newcommand{\LBS}{\textsf{LBS}}

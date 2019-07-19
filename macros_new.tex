@@ -1,0 +1,259 @@
+%\usepackage[show]{notes}
+
+\pdfpagewidth=8.5in
+\pdfpageheight=11in
+
+%\usepackage[T1]{fontenc}
+\renewcommand{\rmdefault}{ptm}
+%\usepackage{mtpro2}
+%\usepackage{times}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{epsfig}
+\usepackage{graphicx}
+% \usepackage{subfigure} %OBSOLETE
+\usepackage{url}
+\usepackage[bottom]{footmisc}
+\usepackage{balance}
+\usepackage{mathtools}
+\usepackage{soul}
+% \usepackage{polyglossia}
+\usepackage{trimclip}
+
+% \usepackage{algorithm}% http://ctan.org/pkg/algorithms
+% \usepackage{algpseudocode}%http://ctan.org/pkg/algorithmicx
+% % \usepackage[linesnumbered,ruled]{algorithm2e}
+% \algrenewcommand\textproc{}% Used to be \textsc
+% \renewcommand{\algorithmicrequire}{\textbf{Input:}}
+% \renewcommand{\algorithmicensure}{\textbf{Output:}}
+% \usepackage{calc} % for \widthof
+% \algrenewcommand\algorithmicensure{%
+%   \makebox[\widthof{\textbf{Require:}}][l]{\textbf{Ensure:}}}
+
+% \usepackage[noend]{algorithmic}
+% \usepackage{algorithm2e}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage[vlined, ruled, linesnumbered]{algorithm2e}
+\DeclareMathAlphabet\mathbfcal{OMS}{cmsy}{b}{n}
+
+\usepackage{algorithm2e}
+% \SetAlFnt{\small}
+%\SetAlFnt{\small}
+%\SetAlCapFnt{\small}
+% \SetAlCapNameFnt{\small}
+% \algsetup{linenosize=\tiny}
+\usepackage{tikz}
+
+\newcommand{\Arrow}[1]{%
+\parbox{#1}{\tikz{\draw[<-](0,0)--(#1,0);}}
+}
+\usepackage{amssymb}
+\newcommand{\mysetminusD}{\hbox{\tikz{\draw[line width=0.6pt,line cap=round] (3pt,0) -- (0,6pt);}}}
+\newcommand{\mysetminusT}{\mysetminusD}
+\newcommand{\mysetminusS}{\hbox{\tikz{\draw[line width=0.45pt,line cap=round] (2pt,0) -- (0,4pt);}}}
+\newcommand{\mysetminusSS}{\hbox{\tikz{\draw[line width=0.4pt,line cap=round] (1.5pt,0) -- (0,3pt);}}}
+\newcommand{\mysetminus}{\mathbin{\mathchoice{\mysetminusD}{\mysetminusT}{\mysetminusS}{\mysetminusSS}}}
+
+\newcommand{\shortleftarrow}{\clipbox*{0pt 0pt {.45\width} {\height}} $\leftarrow$}
+% \SetVlineSkip{0pt}
+\let\oldnl\nl% Store \nl in \oldnl
+\newcommand{\nonl}{\renewcommand{\nl}{\let\nl\oldnl}}
+% Remove line number for one line
+
+\usepackage{multirow}
+\usepackage{xspace}
+%\usepackage{latexsym}
+\usepackage{xcolor}
+%\usepackage{multirow}
+%\usepackage{cite}
+% \usepackage[singlelinecheck=off]{caption}
+\usepackage[skip=-1pt]{caption}
+\usepackage[skip=-1pt]{subcaption}
+%\captionsetup{justification=justified,textfont=normalfont,singlelinecheck=false}
+%\captionsetup[subfigure]{labelfont=normalfont,textfont=normalfont,singlelinecheck=on,justification=raggedright, skip=15pt}
+% \captionsetup[subfigure]{skip=15pt} % global setting for subfigure
+
+\DeclareCaptionType{copyrightbox}
+%\usepackage{url}
+%\usepackage{justification=justified,singlelinecheck=false}{caption}
+%\pagestyle{empty}
+
+
+%                  General Macros
+%\theoremstyle{plain}
+\newtheorem{thrm}{Theorem}
+%\newtheorem{proposition}{Proposition}
+\newtheorem{property}{Property}
+%\newtheorem{corollary}{Corollary}
+\newtheorem{lma}{Lemma}
+\newtheorem{claim}{Claim}
+%\newtheorem{conjecture}{Conjecture}
+\newtheorem{defn}{Definition}
+\newtheorem{remark}{Remark}
+\newtheorem{exple}{Example}
+\newtheorem{problem}{Problem}
+\newtheorem{observation}{Observation}
+
+%\newtheorem{proofproposition}{Proof of Proposition}
+%\newtheorem{proofcorollary}{Proof of Corollary}
+%\newtheorem{prooftheorem}{Proof of Theorem}
+%\newtheorem{prooflemma}{Proof of Lemma}
+
+%                   Para
+\newcommand{\spara}[1]{\smallskip\noindent{\bf #1}}
+\newcommand{\mpara}[1]{\medskip\noindent{\bf #1}}
+\newcommand{\para}[1]{\noindent{\bf #1}}
+
+
+%% tight spacing in item lists
+\newcommand{\squishlist}{
+ \begin{list}{$\bullet$}
+  {  \setlength{\itemsep}{0pt}
+     \setlength{\parsep}{3pt}
+     \setlength{\topsep}{3pt}
+     \setlength{\partopsep}{0pt}
+     \setlength{\leftmargin}{2em}
+     \setlength{\labelwidth}{1.5em}
+     \setlength{\labelsep}{0.5em}
+} }
+\newcommand{\squishlisttight}{
+ \begin{list}{$\bullet$}
+  { \setlength{\itemsep}{0pt}
+    \setlength{\parsep}{0pt}
+    \setlength{\topsep}{0pt}
+    \setlength{\partopsep}{0pt}
+    \setlength{\leftmargin}{2em}
+    \setlength{\labelwidth}{1.5em}
+    \setlength{\labelsep}{0.5em}
+} }
+
+\newcommand{\squishdesc}{
+ \begin{list}{}
+  {  \setlength{\itemsep}{0pt}
+     \setlength{\parsep}{3pt}
+     \setlength{\topsep}{3pt}
+     \setlength{\partopsep}{0pt}
+     \setlength{\leftmargin}{1em}
+     \setlength{\labelwidth}{1.5em}
+     \setlength{\labelsep}{0.5em}
+} }
+
+\newcommand{\squishend}{
+  \end{list}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ALGORITHMS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\SELECT}{\mbox{{\bf select}}\ }
+\newcommand{\FROM}{\mbox{{\bf from}\ }}
+\newcommand{\WHERE}{\mbox{\bf where}\ }
+\newcommand{\SUM}{\mbox{{\bf sum}}\ }
+\newcommand{\GROUPBY}{\mbox{{\bf group by}}\ }
+\newcommand{\HAVING}{\mbox{{\bf having}}\ }
+\newcommand{\CASE}{\mbox{{\bf case}}\ }
+\newcommand{\END}{\mbox{{\bf end}}\ }
+\newcommand{\WHEN}{\mbox{{\bf when}}\ }
+\newcommand{\EXISTS}{\mbox{{\bf exists}}\ }
+\newcommand{\COUNT}{\mbox{\kw{count}}}
+\newcommand{\INSERTINTO}{\mbox{{\bf insert into}}\ }
+\newcommand{\Insert}{\mbox{{\bf insert}}\ }
+\newcommand{\UPDATE}{\mbox{{\bf update}}\ }
+\newcommand{\SET}{\mbox{{\bf set}}\ }
+\newcommand{\IN}{\mbox{{\bf in}}\ }
+%\newcommand{\If}{\mbox{\bf if}\ }
+\newcommand{\Let}{\mbox{\bf let}\ }
+\newcommand{\Call}{\mbox{\bf call}\ }
+\newcommand{\Then}{\mbox{\bf then}\ }
+\newcommand{\To}{\mbox{\bf to}\ }
+\newcommand{\EndWhile}{\mbox{\bf endwhile}\ }
+\newcommand{\EndFor}{\mbox{\bf endfor}\ }
+\newcommand{\EndIf}{\mbox{\bf endif}\ }
+%\newcommand{\Else}{\mbox{\bf else}\ }
+%\newcommand{\ElseIf}{\mbox{\bf elseif}\ }
+%\newcommand{\While}{\mbox{\bf while}\ }
+%\newcommand{\Begin}{\mbox{\bf begin}\ }
+\newcommand{\End}{\mbox{\bf end}\ }
+\newcommand{\Do}{\mbox{\bf do}\ }
+\newcommand{\Downto}{\mbox{\bf downto}\ }
+%\newcommand{\Repeat}{\mbox{\bf repeat}\ }
+\newcommand{\Until}{\mbox{\bf until}\ }
+%\newcommand{\For}{\mbox{\bf for}\ }
+\newcommand{\Each}{\mbox{\bf each}\ }
+%\newcommand{\ForEach}{\mbox{\bf for each}\ }
+\newcommand{\goto}{\mbox{\bf go to}\ }
+\newcommand{\Or}{\mbox{\bf or}\ }
+\renewcommand{\And}{\mbox{\bf and}\ }
+\newcommand{\Not}{\mbox{\bf not}\ }
+\newcommand{\Break}{\mbox{\bf break}\ }
+\newcommand{\Continue}{\mbox{\bf continue}\ }
+%\newcommand{\Return}{\mbox{\bf return}\ }
+%\newcommand{\Case}{\mbox{\bf case}\ }
+\newcommand{\Of}{\mbox{\bf of}\ }
+\newcommand{\push}{\mbox{\bf push}\ }
+\newcommand{\pop}{\mbox{\bf pop}\ }
+\newcommand{\EndCase}{\mbox{\bf end-case}\ }
+\newcommand{\NIL}{\mbox{\em nil}}
+\newcommand{\False}{\mbox{\em false}}
+\newcommand{\True}{\mbox{\em true}}
+\newcommand{\algAND}{{\sc and}\xspace}
+%\newcommand{\OR}{{\sc or}\xspace}
+%\newcommand{\NOT}{{\sc not}\xspace}
+
+\newcommand{\eat}[1]{}
+\newcommand{\entity}[1]{\textsf{\scriptsize #1}}
+\newcommand{\ie}{i.e.,\xspace}
+\newcommand{\eg}{e.g.,\xspace}
+\newcommand{\wrt}{w.r.t.\xspace}
+\newcommand{\aka}{a.k.a.\xspace}
+\newcommand{\kwlog}{\emph{w.l.o.g.}\xspace}
+\newcommand{\NP}{\ensuremath{\mathbf{NP}}\xspace}
+\newcommand{\sharpP}{\ensuremath{\mathbf{\#P}}\xspace}
+\newcommand{\kw}[1]{{\ensuremath {\mathsf{#1}}}\xspace}
+
+\newcommand{\stitle}[1]{\vspace{1.5ex}\noindent{\bf #1}}
+\newcommand{\etitle}[1]{\vspace{0.8ex}\noindent{\em #1}}
+\newcommand{\blds}[1]{\mbox{\scriptsize \boldmath $#1$}}
+\newcommand{\myhrule}{\rule[.5pt]{\hsize}{.5pt}}
+\newcommand{\mat}[2]{{\begin{tabbing}\hspace{#1}\=\+\kill #2\end{tabbing}}}
+\newcommand{\sstab}{\rule{0pt}{8pt}\\[-2.4ex]}
+\newcounter{ccc}
+\newcommand{\bcc}{\setcounter{ccc}{1}\theccc.}
+\newcommand{\icc}{\addtocounter{ccc}{1}\theccc.}
+
+
+%macros AK
+\newcommand{\planar}{\textsf{Planar}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\newcommand{\bigO}{\mathcal{O}}
+\newcommand{\omegatilde}{{\tilde{\Omega}}}
+
+
+\newcommand{\Sm}{\textsf{Small}}
+\newcommand{\SI}{\text{SI}}
+\newcommand{\LI}{\text{LI}}
+\newcommand{\II}{\text{II}}
+\newcommand{\I}{\text{I}}
+\newcommand{\sign}{\textsf{sign}}
+\newcommand{\Lg}{\textsf{Large}}
+\newcommand{\Threshold}{\textsf{Threshold}}
+\newcommand{\Stretch}{\textsf{Stretch}}
+\newcommand{\LBS}{\textsf{LBS}}
+
+\addtolength{\textfloatsep}{-0.15in}
+\addtolength{\dbltextfloatsep}{-0.15in}
+\addtolength{\belowdisplayskip}{-0.15in}
+\addtolength{\abovedisplayskip}{-0.15in}
+\addtolength{\arraycolsep}{-0.15in}
+\renewcommand\baselinestretch{0.98}
+\addtolength\textwidth{0.16cm}
+\addtolength\textheight{0.3cm}
+%\renewcommand{\dbltopfraction}{0.99}
+\renewcommand{\dblfloatpagefraction}{0.9}
+\renewcommand{\floatpagefraction}{0.9}
+

@@ -136,30 +136,30 @@ common to both theses:
 
 
 \begin{abstract}
-Mining of correlated patterns, that represent an important class of
-regularities, has become increasingly important in data management and
-analytics. Surprisingly, the problem of correlated subgraphs mining from a
-single, large graph has received little attention. We investigate a novel and
-critical graph mining problem, called correlated subgraphs mining, which is
-defined as a pair of subgraph patterns that frequently co-occur in proximity
-within a single graph.
-
-Correlated subgraphs are different from frequent subgraphs due to the
-flexibility in which the constituent subgraph instances are connected, thus the
-existing frequent subgraphs mining algorithms cannot be directly applied.
-Furthermore, correlation computation between two subgraph patterns require
-enumerating and finding distances between every pair of subgraph instances of
-both these patterns --- which are both memory intensive and computationally
-demanding. 
-
-To this end, we design a novel, single-step, best-first exploration algorithm to
-detect correlated subgraph patterns: To further improve the efficiency, we
-develop a top-$k$ pruning strategy, while to reduce the memory footprints, we
-develop a compressed data structure, called $\mathcal{R}$eplica that stores all
-instances of a subgraph pattern. Our empirical results show that the proposed
-algorithm not only finds interesting correlations, but also achieves good
-performance for finding correlated subgraphs in large graphs.
-\end{abstract}
+	Mining of correlated patterns, that represent an important class of
+	regularities, has become increasingly important in data management and
+	analytics. Surprisingly, the problem of correlated subgraphs mining from a
+	single, large graph has received little attention. We investigate a novel and
+	critical graph mining problem, called {\em correlated subgraphs mining} ({\sf{CSM}}), 
+	which is defined as a pair of subgraph patterns that frequently co-occur in proximity
+	within a single graph.
+	
+	Correlated subgraphs are different from frequent subgraphs due to the
+	flexibility in which the constituent subgraph instances are connected, thus the
+	existing frequent subgraphs mining algorithms cannot be directly applied.
+	Furthermore, correlation computation between two subgraph patterns require
+	enumerating and finding distances between every pair of subgraph instances of
+	both these patterns --- which is memory intensive and computationally
+	demanding.
+	
+	To this end, we design two novel, holistic, best-first exploration algorithms: {\sf{CSM-E}}
+	(an exact method) and {\sf{CSM-A}} (a more efficient, approximate method with near-optimal
+	quality). To further improve their efficiency, we propose a top-$k$ pruning strategy, 
+	while to reduce memory footprints, we develop a compressed data structure, 
+	$\mathcal{R}$eplica, that stores all instances of a subgraph pattern on demand. 
+	Our empirical results show that the proposed algorithms not only find interesting correlations, 
+	but also achieve good scalability over large networks.
+	\end{abstract}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Table of contents etc.
@@ -220,8 +220,8 @@ performance for finding correlated subgraphs in large graphs.
 
 \input{introduction}
 \input{preliminaries}
-\input{exact_algo}
-% \input{approx_algo}
+\input{exact_algo_new}
+\input{approx_algo}
 
 % \input{overview} \input{searchTree} \input{calculation}
 % \input{algorithm}

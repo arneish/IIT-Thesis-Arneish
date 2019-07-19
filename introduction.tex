@@ -1,63 +1,83 @@
-\chapter{Introduction}
+\section{Introduction}
 \label{sec:intro}
 
-% \eat{
-Graphs are a ubiquitous model to represent objects and their complex relations, including protein interaction and genomic graphs in biology,
-chemical compound structures in chemistry, food webs and microbial taxa communities in ecology, call graphs in program flow analysis,
-social networks in social science, Web graphs, as well as XML documents in e-commerce, government and medical records \cite{SH12}.
-Efficient mining of hidden patterns play an important role in developing data-driven methodologies for analyzing the graphs
+Graphs are a ubiquitous model to represent objects and their complex relations,
+including protein interaction networks and genomic graphs in biology \cite{RHS13},
+chemical compounds \cite{WMFP05}, call graphs in program flow analysis \cite{control},
+social networks \cite{Kempe}, and government and medical records \cite{SH12}.
+Efficient mining of hidden patterns play an important role in developing data-driven
+methodologies for analyzing graphs
 resulting from such datasets.
-
 Research on graph mining has emerged as one of the hottest topics in recent years due to its wide applications in a variety of fields including
-drug discovery \cite{KK01,NK05,YH02}, molecular activity prediction \cite{JYW10,TCG09},
-predicting disease susceptibility from gene expression data \cite{RHS13,DI11}, software bug localization \cite{CLZWY09},
-clustering and classification of graphs \cite{DKWK05,YCHY08}, anomaly detection \cite{ATK15}, and graph anonymization \cite{LAW11}.
+drug discovery \cite{KK01,NK05,YH02}, molecular activity prediction \cite{JinYW10,TCG09},
+predicting disease susceptibility from gene expression data \cite{RHS13,DI11}, clustering and classification of graphs \cite{DKWK05,YCHY08}, and anomaly detection \cite{ATK15}.
 Several variants of graph pattern mining have been proposed,
-such as frequent subgraphs \cite{YH02,EASK14}, approximate subgraphs \cite{KYW10}, closed and maximal frequent subgraphs \cite{HWPY04,YH03},
-discriminant and statistically significant subgraphs \cite{TCG09,RS09,YCHY08}, representative subgraphs \cite{CHSBZ08,ZYL09}, etc. --- their scalable algorithms
-were implemented; besides they were extensively surveyed and compared, e.g., in \cite{HCXY07,WMFP05,AW10,KR17}.
+such as frequent subgraphs \cite{YH02,EASK14}, approximate subgraphs \cite{KYW10}, discriminant and statistically significant subgraphs \cite{TCG09,RS09,YCHY08}, representative subgraphs \cite{CHSBZ08,ZYL09}, etc.
+%--- their scalable algorithms
+%were implemented; besides, they were extensively surveyed and compared, e.g., in \cite{HCXY07,WMFP05,AW10,KR17}.
 %
-\begin{figure}
-\centering
-\includegraphics[scale=0.32]{images/taxol}
+\begin{figure}[t!]
 \vspace{-2mm}
-\caption{\scriptsize Correlation between {\sf CCCH} and {\sf O} in {\sf Taxol}, an anti-cancer drug. {\sf CCCH} and {\sf O}
+\centering
+\includegraphics[width=2.2in]{images/taxol.pdf}
+\caption{Correlation between {\sf CCCH} and {\sf O} in {\sf Taxol}, an anti-cancer drug. {\sf CCCH} and {\sf O}
 occur closely for several times, but they are connected in different ways.}
 \label{fig:taxol}
-\vspace{-6mm}
+\vspace{-0.10in}
 \end{figure}
 %
+
 
 In spite of tremendous progress being made in the area of graph pattern mining, surprisingly the problem of exploring correlations between subgraphs
 in a single, large graph has not been investigated in the past. In particular, we define a pair of subgraphs as correlated if
 they co-occur frequently in proximity within a single graph. Correlated subgraphs are different from frequent subgraphs due to
-the flexibility in which the constituent subgraphs can be connected within different instances of a correlated pattern. In Figure~\ref{fig:taxol},
+the flexibility in which the constituent subgraphs can be connected within different instances of a correlated pattern. To elaborate, in Figure~\ref{fig:taxol},
 we highlight three regions inside the structure of the chemical compound {\sf Taxol}, an anti-cancer drug, where {\sf CCCH} and {\sf O} occur closely,
 albeit they are connected in different ways in all three instances. For simplicity, we do not consider the edge types (i.e., single- vs. double-bond)
 in this example. This figure illustrates that while {\sf CCCH} and {\sf O} form a correlated subgraph pair, the individual instances, e.g., {\sf HCC(-O)C}
-may not be frequent; and hence, the existing frequent subgraph mining techniques cannot be directly applied to discover such corrected patterns.
+may not be frequent; and hence, existing frequent subgraphs mining techniques would not discover such corrected patterns.
 
-
+\vspace{-0.05in}
+\subsection{Applications}
 The problem of detecting correlated subgraphs from a single, large graph arises in many real-world scenarios, including biological,
-social, chemical, and ecological networks, such as the ones described next.
+social, chemical, and ecological networks. We discuss two concrete examples below.
 
+\begin{figure}
+ \vspace{-0.20in}
+ \centering
+	\begin{subfigure}[t]{0.21\textwidth}
+		\includegraphics[scale=0.24]{img2/mico/mico_gvf3.pdf}
+		\caption{\scriptsize $Mico$ dataset (small)}
+		\label{fig:intro_micogvf3}
+    \end{subfigure}%
+    \hspace*{\fill}
+	\begin{subfigure}[t]{0.23\textwidth}
+		\includegraphics[scale=0.24]{img2/citationdblp/citationdblp_gvf3.pdf}
+		\caption{\scriptsize $DBLP\ Citation$ dataset (large)}
+		\label{fig:intro_citationdblpgvf3}
+	\end{subfigure}%
+	\caption{Our performance against GraMi+VF3 baseline}
+	\label{fig:motivation}
+	\vspace{-0.1in}
+\end{figure}
 
-\spara{$\bullet$ Co-operative functions in biological networks.} In the genome graph of an individual, a node represents a gene,
+\spara{$\bullet$ Co-operative functions in biological networks.} In genome graph of an individual, a node represents a gene,
 and each edge denotes the interaction between two genes. In practice, there are some combinations of dominant genes that
 occur frequently, and they are more likely to express critical phenotypes of the individual.
 Past studies have shown that some pairs of dominant gene combinations co-occur with each other in each individual,
 and such co-occurring patterns reflect the joint functionality that are needed for co-operative biological functions such as chemical bonds
 and binding sites \cite{LFSW14}. Based on pairs of correlated genes, we can predict co-operative biological functions of an
-individual. Besides, the absence of such correlations could indicate anomalies and diseases.
-Analogously, in a protein interaction (PPI) network, correlated frequent subgraphs represent recurring functional units,
+individual. Besides, the absence of such correlations indicates anomalies and diseases.
+Analogously, in a protein interaction network, correlated frequent subgraphs represent recurring functional units,
 identification of which could assist in predicting new protein functionalities.
 
+%\vspace{-0.05in}
 \spara{$\bullet$ Co-occurrence patterns in ecological networks.}
-Co-occurrence patterns are used in ecology to explore interactions between organisms
+In ecology, co-occurrence patterns are used to explore interactions between organisms
 and environmental effects on co-existence within biological communities \cite{WHH14}.
 Exploration of inter-taxa relationships can help identify potential biotic interactions, habitat affinities, and shared physoilogies,
 that could guide more focused studies and experiments. For example, Barberan et al. \cite{BBCF12} analyzed
-over 160\,000 bacterial and archaeal 16S rRNA gene sequences from 151 soil samples, collected
+over $160\,000$ bacterial and archaeal $16S$ rRNA gene sequences from $151$ soil samples, collected
 from a wide variety of ecosystem types, in order to demonstrate the utility of network
 analyses and for evaluating whether soil microorganisms tend to co-occur more
 than expected by chance, and how these
@@ -65,21 +85,25 @@ ecological categories shape network structure of inter-taxa and extra-taxa relat
 These tasks can be achieved by mining correlated subgraphs in a single large graph
 representing the soil microbial community.
 
-\spara{Challenges.}
-The problem that we study is a non-trivial one.
+\vspace{-0.05in}
+\subsection{Technical Challenges and Baselines}
+\label{sec:baseline}
+%The problem that we study is a non-trivial one.
 %
-\squishlist
-\item Detecting correlated subgraphs is more difficult
-than the frequent subgraphs mining problem, which already has an exponential search space, that is, a graph with $m$ edges
+%\squishlist
+\textbf{Frequent subgraphs mining. } Detecting correlated subgraphs is more difficult
+than the frequent subgraphs mining problem \cite{WMFP05}, which already has an exponential search space, that is, a graph with $m$ edges
 can have $2^m$ subgraphs. For correlated subgraphs mining, the search space is doubly-exponential, because
-one needs to compute the correlation between every pair of subgraphs.
-\item Additionally, unlike frequent subgraphs mining,
+one needs to compute the correlation between every pair of subgraph instances.
+ Additionally, unlike frequent subgraphs mining,
 correlated subgraphs mining is neither downward-closure, nor upward-closure (we shall demonstrate this formally
-in Section~\ref{sec:problem}), thereby making it difficult to directly apply apriori-based pruning techniques.
-\item Last, but not least, only finding the frequent subgraphs is not sufficient for our problem.
-Instead, we require to enumerate all instances of those frequent subgraphs for computing the correlation
-between pairs. This makes our problem more challenging both from computation and memory perspective.
-\squishend
+in \S~\ref{sec:problem}), thereby making it difficult to directly apply apriori-based pruning techniques.
+
+ Last, but not least, only finding the frequent subgraphs is not sufficient for our problem. Since we call subgraph $A$ to be correlated to $B$ if their \emph{instances} are frequently located close to each other, we need to enumerate \emph{all} instances of those frequent subgraphs for computing the correlation
+between pairs. This makes our problem more challenging both from computation and memory perspective. To establish this point empirically, we perform frequent subgraphs mining using GraMi~\cite{EASK14}, and for each frequent subgraph, we enumerate all of its instances using the state-of-the-art VF3 algorithm~\cite{CarlettiFSV18} and finally compute the correlated pairs. Fig.~\ref{fig:motivation} presents the result on two datasets; the dataset description is provided in Table~\ref{ref:datasets}. We observe that the frequent subgraphs mining based approach takes more than $15$ days in the DBLP-Citation network dataset. On the other hand, the proposed approach, CSM, is up to $5$ orders of magnitude faster. Real networks contain millions of nodes and it is desirable to obtain results within minutes. In this paper, we achieve this task with a single-step correlated subgraphs mining algorithm. %As visible in Fig.~\ref{fig:motivation}, the proposed approach, denoted as CSM, is XXX orders of magnitude faster.
+
+
+\textbf{Correlated subgraphs mining in graph databases. } The closest work to ours in the space of correlated subgraphs mining is by Ye et al.\cite{KCY09}. However, there are three fundamental differences. First, Ye et al. target the graph database scenario where there are multiple graphs and the frequency of a subgraph is defined as the number of database graphs containing the given subgraph. In our problem, we target the single large graph scenario where the frequency of a subgraph is the number instances within the single large graph. It is well known from the frequent subgraphs mining literature \cite{EASK14,KhanR17}, that the single-large-graph scenario imposes a more severe scalability challenge since subgraph enumeration is more expensive. Second, the definition of correlated patterns is different. More specifically, in \cite{KCY09}, two subgraphs $A$ and $B$ are correlated if the containment of $A$ within a data graph increases the likelihood of containing $B$ as well. In our problem, two subgraphs $A$ and $B$ are correlated if the instances of $A$ are frequently located in \emph{close proximity} to the instances of $B$. Third, we have the concept of proximity in our problem, which is absent in \cite{KCY09}. Owing to these fundamental differences in the formulation, the resulting algorithmic challenges are different as well.
 
 %We next describe why state-of-the-art techniques cannot be trivially adapted to find correlated subgraphs
 %in a single, large graph.
@@ -97,7 +121,7 @@ between pairs. This makes our problem more challenging both from computation and
 %frequent subgraphs mining and enumeration approach will compute correlations across every frequent subgraphs,
 %which is expensive and mostly redundant. This brings the following critical question: {\em Can we mine the (top-$k$) correlated
 %subgraphs in one single step}, as opposed to the aforementioned two-step frequent subgraphs mining and enumeration approach?
-%The answer to this question, as we shall demonstrate in Section~\ref{sec:algorithms}, is affirmative.
+%The answer to this question, as we shall demonstrate in \S~\ref{sec:algorithms}, is affirmative.
 %
 %\begin{figure}[t!]
 %\vspace{-2mm}
@@ -138,22 +162,15 @@ between pairs. This makes our problem more challenging both from computation and
 %proximity pattern, thus it is unable to capture the fact that {\em hydrolase} and {\em transferase}
 %activities are not connected with each other directly.
 
-\spara{Our contributions and roadmap.}
-To this end, we design a single-step, best-first exploration algorithm to detect correlated subgraphs,
-coupled with efficient top-$k$ pruning and various optimization techniques.
-The main contributions of this thesis are as follows:
+\vspace{-0.1in}
+\subsection{Contributions and Roadmap}
+%In this paper, we design a single-step, best-first exploration algorithm to detect correlated subgraphs,
+%coupled with efficient top-$k$ pruning and various optimization techniques.
+The main contributions of this paper are as follows:
 \squishlist
-\item We introduce a scheme for defining and computing the \emph{correlation} metric between
-isomorphisms of two subgraph patterns
-\item We introduce a novel data structure called the \textit{Replica} structure
-that offers a strategy to store all instances overcoming the space limitations of
-\textsc{GrowStore}.
-\item We propose an \textit{exact} backtracking algorithm that works on the \textit{Replica}
-structure to mine all ismorphisms of a pattern
-\item For scalability, we also propose an \textit{approximate} backtracking
-algorithm that approximately computes the \textit{replica} structure 
-\item We empirically demonstrate effectiveness and efficiency of our methods on real-life graphs,
-while also detailing three concrete case studies (Section \ref{sec:experiments}).
+\item We formulate the problem of \emph{correlated subgraphs mining} in a single large graph, which is defined as a pair of subgraph patterns that frequently
+co-occur in proximity within a single graph (\S~\ref{sec:preliminaries}).
+\item The key differentiating factor in our problem compared to existing subgraph mining problems is that we not only need to identify the subgraph patterns, but also enumerate and store all of its instances. This requirement imposes a huge scalability challenge on both computation and storage. We tackle this issue by designing a novel data structure called \emph{$\mathcal{R}$eplica}, which stores all instances of a subgraph pattern on demand in compressed manner. %$\mathcal{R}$eplica not only brings down the computation cost, but also reduces the storage cost drastically. 
+ Using $\mathcal{R}$eplica as the data storage platform, we design a single-step, best-first exploration algorithm to detect correlated subgraph pairs efficiently (\S 3). We further speed up the mining process by designing a near-optimal approximtion algorithm (\S 4).
+\item We empirically demonstrate effectiveness and efficiency of our methods on seven real graphs, while also detailing concrete case studies. We establish that the proposed algorithm is up to $5$ orders of magnitude faster than baseline strategies and scalable in million-sized networks (\S \ref{sec:experiments}).
 \squishend
-% }
-
